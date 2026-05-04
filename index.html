@@ -141,9 +141,21 @@
       .td-name{font-size:12px}
       .s-btn{font-size:11px;padding:3px 8px}
     }
+    .seg-wrap{display:inline-flex;background:#e2e8f0;border-radius:22px;padding:3px;gap:0}
+    .seg-opt{border:none;padding:5px 16px;border-radius:19px;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;color:#718096;background:transparent;white-space:nowrap;line-height:1.4}
+    .seg-opt.active{background:#fff;color:#2d3748;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+    .lang-toggle{position:fixed;top:14px;right:14px;z-index:999;box-shadow:0 2px 8px rgba(0,0,0,.13);border-radius:22px}
   </style>
 </head>
 <body>
+
+<!-- Language toggle (fixed top-right) -->
+<div class="lang-toggle">
+  <div class="seg-wrap">
+    <button class="seg-opt active" id="lt-th" onclick="setLang('th')">TH</button>
+    <button class="seg-opt" id="lt-en" onclick="setLang('en')">EN</button>
+  </div>
+</div>
 
 <!-- ══════════ SCREEN 1: SETUP ══════════ -->
 <div id="screen-setup">
@@ -156,13 +168,13 @@
     <div class="tip-bar">
       <span>💡</span>
       <div>
-        <strong>วิธีกรอก:</strong> คลิกที่ปุ่มด้านขวาของแต่ละวิชาเพื่อเปลี่ยนสถานะ
+        <strong id="txt-tip-title">วิธีกรอก:</strong> <span id="txt-tip-body">คลิกที่ปุ่มด้านขวาของแต่ละวิชาเพื่อเปลี่ยนสถานะ</span>
         <div class="chips">
-          <span class="tip-chip none">ยังไม่เรียน</span>
+          <span class="tip-chip none" id="chip-none">ยังไม่เรียน</span>
           <span style="color:#718096;font-size:13px">→</span>
-          <span class="tip-chip current">🟣 กำลังเรียนอยู่</span>
+          <span class="tip-chip current" id="chip-cur">🟣 กำลังเรียนอยู่</span>
           <span style="color:#718096;font-size:13px">→</span>
-          <span class="tip-chip done">✅ ผ่านแล้ว</span>
+          <span class="tip-chip done" id="chip-done">✅ ผ่านแล้ว</span>
         </div>
       </div>
     </div>
@@ -170,21 +182,21 @@
     <!-- Selectors -->
     <div class="sel-group">
       <div class="sel-row">
-        <label>โปรแกรม</label>
+        <label id="lbl-program">โปรแกรม</label>
         <div class="btn-grp">
           <button class="bg-btn active" id="btn-reg" onclick="setProgram('reg')">ภาคปกติ</button>
           <button class="bg-btn" id="btn-inter" onclick="setProgram('inter')">นานาชาติ</button>
         </div>
       </div>
       <div class="sel-row">
-        <label>แผน</label>
+        <label id="lbl-track">แผน</label>
         <div class="btn-grp">
           <button class="bg-btn active" id="btn-special" onclick="setTrack('special')">ปัญหาพิเศษ</button>
           <button class="bg-btn" id="btn-coop" onclick="setTrack('coop')">สหกิจศึกษา</button>
         </div>
       </div>
       <div class="sel-row" id="minor-row">
-        <label>วิชาโท</label>
+        <label id="lbl-minor">วิชาโท</label>
         <div class="btn-grp">
           <button class="bg-btn active" id="btn-nominor" onclick="setMinor(false)">ไม่มีวิชาโท</button>
           <button class="bg-btn" id="btn-minor" onclick="setMinor(true)">มีวิชาโท</button>
@@ -193,7 +205,7 @@
     </div>
 
     <div class="year-row">
-      <label>ปัจจุบันกำลังขึ้น</label>
+      <label id="lbl-year">ปัจจุบันกำลังขึ้น</label>
       <select id="sel-ys" onchange="onYearChange()">
         <option value="1-1">ปี 1 เทอม 1</option>
         <option value="1-2">ปี 1 เทอม 2</option>
@@ -208,18 +220,18 @@
 
     <div id="curr-tag-wrap"></div>
     <div id="form-sections"></div>
-    <button class="btn-gen" onclick="generateResult()">ดูแผนการเรียนของฉัน →</button>
+    <button class="btn-gen" id="btn-gen" onclick="generateResult()">ดูแผนการเรียนของฉัน →</button>
   </div>
 </div>
 
 <!-- ══════════ SCREEN 2: RESULT ══════════ -->
 <div id="screen-result" style="display:none">
   <div class="result-wrap">
-    <button class="btn-back" onclick="goBack()">← แก้ไขข้อมูล</button>
+    <button class="btn-back" id="btn-back" onclick="goBack()">← แก้ไขข้อมูล</button>
     <div id="result-content"></div>
     <div class="support-box">
-      <h3>💜 สนับสนุนเราได้ที่นี่</h3>
-      <p>ถ้าเครื่องมือนี้มีประโยชน์ ติดตามและสนับสนุน MeClip ได้ที่ช่องทางด้านล่างนี้เลย</p>
+      <h3>💜 <span id="txt-support-title">สนับสนุนเราได้ที่นี่</span></h3>
+      <p id="txt-support-body">ถ้าเครื่องมือนี้มีประโยชน์ ติดตามและสนับสนุน MeClip ได้ที่ช่องทางด้านล่างนี้เลย</p>
       <div class="support-links">
         <a href="https://www.instagram.com/meclips_official/" class="sup-link" target="_blank" rel="noopener" title="Instagram">
           <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
@@ -262,10 +274,87 @@ let program  = 'reg';     // 'reg' | 'inter'
 let track    = 'special'; // 'special' | 'coop'
 let hasMinor = false;
 let currYear = 1; // derived from sel-ys
+let lang     = 'th';      // 'th' | 'en'
 let ST = {};              // course status map, cleared on curriculum change
 let customMinor = [];
 let customFree  = [];
 let SECTIONS = [];        // active sections
+
+// ══════════════════════════════════════════
+// TRANSLATIONS
+// ══════════════════════════════════════════
+const T = {
+  th: {
+    tipTitle:'วิธีกรอก:', tipBody:'คลิกที่ปุ่มด้านขวาของแต่ละวิชาเพื่อเปลี่ยนสถานะ',
+    chipNone:'ยังไม่เรียน', chipCur:'🟣 กำลังเรียนอยู่', chipDone:'✅ ผ่านแล้ว',
+    lblProgram:'โปรแกรม', lblTrack:'แผน', lblMinor:'วิชาโท',
+    reg:'ภาคปกติ', inter:'นานาชาติ',
+    special:'ปัญหาพิเศษ', coop:'สหกิจศึกษา',
+    noMinor:'ไม่มีวิชาโท', withMinor:'มีวิชาโท',
+    yearLabel:'ปัจจุบันกำลังขึ้น',
+    yearOpts:['ปี 1 เทอม 1','ปี 1 เทอม 2','ปี 2 เทอม 1','ปี 2 เทอม 2','ปี 3 เทอม 1','ปี 3 เทอม 2','ปี 4 เทอม 1','ปี 4 เทอม 2'],
+    btnGen:'ดูแผนการเรียนของฉัน →', btnBack:'← แก้ไขข้อมูล',
+    tagReq:'บังคับ',
+    sNone:'ยังไม่เรียน', sCur:'กำลังเรียน 🟣', sDone:'ผ่านแล้ว ✅',
+    grade:'เกรด',
+    colCode:'รหัส', colName:'ชื่อวิชา', colCr:'cr', colStatus:'สถานะ',
+    customCode:'รหัสวิชา เช่น 707201', customName:'ชื่อวิชา', customCr:'cr',
+    btnAdd:'+ เพิ่ม', noCustom:'ยังไม่ได้เพิ่มวิชา — กรอกช่องด้านบนแล้วกด + เพิ่ม',
+    resultTitle:'🎓 แผนการเรียน — เศรษฐศาสตรบัณฑิต มช.',
+    legPassed:'✅ ผ่านแล้ว', legCur:'🟣 กำลังเรียน', legNone:'— ยังไม่เรียน',
+    supportTitle:'สนับสนุนเราได้ที่นี่',
+    supportBody:'ถ้าเครื่องมือนี้มีประโยชน์ ติดตามและสนับสนุน MeClip ได้ที่ช่องทางด้านล่างนี้เลย',
+    cardLabels:['GE','วิชาแกน','วิชาเอกบังคับ','วิชาเอกเลือก','วิชาโท','เลือกเสรี'],
+    currProg:{reg:'ภาคปกติ',inter:'นานาชาติ'}, currTrk:{special:'ปัญหาพิเศษ',coop:'สหกิจศึกษา'},
+    curr2025:'หลักสูตร 2568', curr2024:'หลักสูตร 2563/2562',
+    subtitleMain:'กรอกวิชาที่เคยเรียนมาแล้ว แล้วระบบจะสรุปแผนการเรียนให้อัตโนมัติ',
+    subtitleSub:'หลักสูตรเศรษฐศาสตรบัณฑิต มช.', creditUnit:'หน่วยกิต', legLabel:'สัญลักษณ์:',
+    selCount:(s,t)=>`เลือกแล้ว ${s} / ${t}`,
+    yearSem:(y,s)=>`ขึ้นปี ${y} เทอม ${s}`,
+    creditsDone:(d,t,p)=>`เรียนแล้ว ${d} / ${t} หน่วยกิต (${p}%)`,
+    coreReqNode:'วิชาแกนบังคับ', coreElecNode:'วิชาแกนเลือก',
+    elecAB:'วิชาเอกเลือก กลุ่ม A + B',
+    elecGroupA:'กลุ่ม A — เลือกอย่างน้อย 1 วิชา', elecGroupB:'กลุ่ม B — รายวิชาเลือก',
+    geNode:'หมวด GE', coreNode:'วิชาแกน', majReqNode:'วิชาเอกบังคับ',
+    majElecNode:'วิชาเอกเลือก', minorNode:'วิชาโท (15 cr)', freeNode:'วิชาเลือกเสรี (6 cr)',
+    noMinorAdded:'📌 ยังไม่ได้เพิ่มวิชาโท', noFreeAdded:'📌 ยังไม่ได้เพิ่มวิชาเลือกเสรี',
+  },
+  en: {
+    tipTitle:'How to use:', tipBody:'Click the button on the right of each course to change its status',
+    chipNone:'Not taken', chipCur:'🟣 In progress', chipDone:'✅ Passed',
+    lblProgram:'Program', lblTrack:'Track', lblMinor:'Minor',
+    reg:'Regular', inter:'International',
+    special:'Independent Study', coop:'Cooperative Ed.',
+    noMinor:'No Minor', withMinor:'With Minor',
+    yearLabel:'Currently entering',
+    yearOpts:['Year 1 Sem 1','Year 1 Sem 2','Year 2 Sem 1','Year 2 Sem 2','Year 3 Sem 1','Year 3 Sem 2','Year 4 Sem 1','Year 4 Sem 2'],
+    btnGen:'View My Study Plan →', btnBack:'← Edit Info',
+    tagReq:'Required',
+    sNone:'Not taken', sCur:'In progress 🟣', sDone:'Passed ✅',
+    grade:'Grade',
+    colCode:'Code', colName:'Course Name', colCr:'Cr', colStatus:'Status',
+    customCode:'Code e.g. 707201', customName:'Course name', customCr:'cr',
+    btnAdd:'+ Add', noCustom:'No courses added yet — fill in above and click + Add',
+    resultTitle:'🎓 Study Plan — B.Econ, CMU',
+    legPassed:'✅ Passed', legCur:'🟣 In progress', legNone:'— Not taken',
+    supportTitle:'Support Us',
+    supportBody:'If this tool was helpful, follow and support MeClip through the channels below!',
+    cardLabels:['GE','Core','Major Req.','Major Elec.','Minor','Free Elec.'],
+    currProg:{reg:'Regular',inter:'International'}, currTrk:{special:'Indep. Study',coop:'Co-op'},
+    curr2025:'Curriculum 2025', curr2024:'Curriculum 2020',
+    subtitleMain:'Enter courses you have taken and the system will summarize your study plan automatically',
+    subtitleSub:'B.Econ curriculum, CMU', creditUnit:'credits', legLabel:'Legend:',
+    selCount:(s,t)=>`Selected ${s} / ${t}`,
+    yearSem:(y,s)=>`Year ${y} Sem ${s}`,
+    creditsDone:(d,t,p)=>`Completed ${d} / ${t} credits (${p}%)`,
+    coreReqNode:'Core Required', coreElecNode:'Core Elective',
+    elecAB:'Major Elec. Group A + B',
+    elecGroupA:'Group A — pick at least 1', elecGroupB:'Group B — elective courses',
+    geNode:'GE', coreNode:'Core Subjects', majReqNode:'Major Required',
+    majElecNode:'Major Elective', minorNode:'Minor (15 cr)', freeNode:'Free Elective (6 cr)',
+    noMinorAdded:'📌 No minor courses added yet', noFreeAdded:'📌 No free elective courses added yet',
+  }
+};
 
 // ══════════════════════════════════════════
 // COURSE DATA
@@ -442,9 +531,10 @@ function getCurriculumKey() {
 
 function getCurriculumLabel() {
   const { use2025, prog, trk } = getCurriculumKey();
-  const pLabel = prog === 'reg' ? 'ภาคปกติ' : 'นานาชาติ';
-  const tLabel = trk === 'special' ? 'ปัญหาพิเศษ' : 'สหกิจศึกษา';
-  const cLabel = use2025 ? 'หลักสูตร 2568' : 'หลักสูตร 2563/2562';
+  const t = T[lang];
+  const pLabel = t.currProg[prog];
+  const tLabel = t.currTrk[trk];
+  const cLabel = use2025 ? t.curr2025 : t.curr2024;
   return `${pLabel} | ${tLabel} | ${cLabel}`;
 }
 
@@ -890,6 +980,46 @@ function updateMinorRowVisibility() {
   document.getElementById('minor-row').style.display = show ? 'flex' : 'none';
 }
 
+function setLang(l) {
+  lang = l;
+  document.getElementById('lt-th').className = 'seg-opt' + (l==='th'?' active':'');
+  document.getElementById('lt-en').className = 'seg-opt' + (l==='en'?' active':'');
+  applyTranslations();
+  rebuildAll();
+}
+
+function applyTranslations() {
+  const t = T[lang];
+  document.getElementById('txt-tip-title').textContent = t.tipTitle;
+  document.getElementById('txt-tip-body').textContent  = t.tipBody;
+  document.getElementById('chip-none').textContent     = t.chipNone;
+  document.getElementById('chip-cur').textContent      = t.chipCur;
+  document.getElementById('chip-done').textContent     = t.chipDone;
+  document.getElementById('lbl-program').textContent   = t.lblProgram;
+  document.getElementById('lbl-track').textContent     = t.lblTrack;
+  document.getElementById('lbl-minor').textContent     = t.lblMinor;
+  document.getElementById('btn-reg').textContent       = t.reg;
+  document.getElementById('btn-inter').textContent     = t.inter;
+  document.getElementById('btn-special').textContent   = t.special;
+  document.getElementById('btn-coop').textContent      = t.coop;
+  document.getElementById('btn-nominor').textContent   = t.noMinor;
+  document.getElementById('btn-minor').textContent     = t.withMinor;
+  document.getElementById('lbl-year').textContent      = t.yearLabel;
+  document.getElementById('btn-gen').textContent       = t.btnGen;
+  const bb = document.getElementById('btn-back');
+  if (bb) bb.textContent = t.btnBack;
+  document.getElementById('txt-support-title').textContent = t.supportTitle;
+  document.getElementById('txt-support-body').textContent  = t.supportBody;
+  // Rebuild year options preserving current value
+  const sel = document.getElementById('sel-ys');
+  if (sel) {
+    const v = sel.value;
+    const vals = ['1-1','1-2','2-1','2-2','3-1','3-2','4-1','4-2'];
+    sel.innerHTML = t.yearOpts.map((o,i)=>`<option value="${vals[i]}">${o}</option>`).join('');
+    if (v) sel.value = v;
+  }
+}
+
 function rebuildAll() {
   ST = {};
   customMinor = [];
@@ -907,8 +1037,9 @@ function updateCurrTag() {
 
 function updateHeaderSubtitle() {
   const totalCr = getTotalCredits();
+  const t = T[lang];
   document.getElementById('hdr-subtitle').innerHTML =
-    `กรอกวิชาที่เคยเรียนมาแล้ว แล้วระบบจะสรุปแผนการเรียนให้อัตโนมัติ<br>หลักสูตรเศรษฐศาสตรบัณฑิต มช. — ${getCurriculumLabel()} (${totalCr} หน่วยกิต)`;
+    `${t.subtitleMain}<br>${t.subtitleSub} — ${getCurriculumLabel()} (${totalCr} ${t.creditUnit})`;
 }
 
 // ══════════════════════════════════════════
@@ -940,14 +1071,14 @@ function buildForm() {
           <div class="grp-pick" id="${pickId}-wrap">
             <div class="grp-pick-hdr">
               <span class="grp-pick-title">🔵 ${g.label}</span>
-              <span class="pick-cnt ng" id="${pickId}-cnt">เลือกแล้ว 0 / ${g.pick}</span>
+              <span class="pick-cnt ng" id="${pickId}-cnt">${T[lang].selCount(0, g.pick)}</span>
             </div>
-            <div class="tbl-head"><span>รหัส</span><span>ชื่อวิชา</span><span>cr</span><span style="text-align:right">สถานะ</span></div>`;
+            <div class="tbl-head"><span>${T[lang].colCode}</span><span>${T[lang].colName}</span><span>${T[lang].colCr}</span><span style="text-align:right">${T[lang].colStatus}</span></div>`;
         g.courses.forEach(c => { h += courseRow(c, sec.id, pickId); });
         h += `</div></div>`;
       } else {
-        h += `<div class="grp-req-hdr"><span class="lbl">📌 ${g.label}</span><span class="tag-req">บังคับ</span></div>
-          <div class="tbl-head"><span>รหัส</span><span>ชื่อวิชา</span><span>cr</span><span style="text-align:right">สถานะ</span></div>`;
+        h += `<div class="grp-req-hdr"><span class="lbl">📌 ${g.label}</span><span class="tag-req">${T[lang].tagReq}</span></div>
+          <div class="tbl-head"><span>${T[lang].colCode}</span><span>${T[lang].colName}</span><span>${T[lang].colCr}</span><span style="text-align:right">${T[lang].colStatus}</span></div>`;
         g.courses.forEach(c => { h += courseRow(c, sec.id, null); });
       }
     });
@@ -965,8 +1096,8 @@ function courseRow(c, secId, pickId) {
     <span class="td-cr">${c.cr}</span>
     <span class="td-act">
       <button class="s-btn none" id="sb-${c.code}"
-        onclick="cycleStatus('${c.code}',${c.cr},'${secId}','${pickId||''}')">ยังไม่เรียน</button>
-      <input type="text" class="g-input" id="gi-${c.code}" placeholder="เกรด"
+        onclick="cycleStatus('${c.code}',${c.cr},'${secId}','${pickId||''}')">${T[lang].sNone}</button>
+      <input type="text" class="g-input" id="gi-${c.code}" placeholder="${T[lang].grade}"
         style="display:none" oninput="if(!ST['${c.code}'])ST['${c.code}']={s:'done',g:''};ST['${c.code}'].g=this.value">
     </span>
   </div>`;
@@ -983,13 +1114,13 @@ function customSection(type, label, req) {
     </div>
     <div class="acc-body" id="acc-${type}">
       <div class="custom-add">
-        <input type="text" id="${type}-code" placeholder="รหัสวิชา เช่น 707201" maxlength="10">
-        <input type="text" id="${type}-name" placeholder="ชื่อวิชา" style="flex:2">
-        <input type="number" id="${type}-cr" placeholder="cr" style="width:48px" value="3" min="1" max="9">
-        <button class="btn-add" onclick="addCustom('${type}')">+ เพิ่ม</button>
+        <input type="text" id="${type}-code" placeholder="${T[lang].customCode}" maxlength="10">
+        <input type="text" id="${type}-name" placeholder="${T[lang].customName}" style="flex:2">
+        <input type="number" id="${type}-cr" placeholder="${T[lang].customCr}" style="width:48px" value="3" min="1" max="9">
+        <button class="btn-add" onclick="addCustom('${type}')">${T[lang].btnAdd}</button>
       </div>
       <div class="custom-list" id="list-${type}">
-        <p style="font-size:12.5px;color:#a0aec0;padding:8px 4px">ยังไม่ได้เพิ่มวิชา — กรอกช่องด้านบนแล้วกด + เพิ่ม</p>
+        <p style="font-size:12.5px;color:#a0aec0;padding:8px 4px">${T[lang].noCustom}</p>
       </div>
     </div>
   </div>`;
@@ -1006,7 +1137,7 @@ function cycleStatus(code, cr, secId, pickId) {
   const gi  = document.getElementById('gi-'+code);
   if (!btn) return;
   btn.className = 's-btn '+s;
-  btn.textContent = s==='none' ? 'ยังไม่เรียน' : s==='current' ? 'กำลังเรียน 🟣' : 'ผ่านแล้ว ✅';
+  btn.textContent = s==='none' ? T[lang].sNone : s==='current' ? T[lang].sCur : T[lang].sDone;
   if (gi) gi.style.display = s==='done' ? 'inline' : 'none';
   refreshBadge(secId);
   if (pickId) refreshPickCounter(pickId);
@@ -1033,7 +1164,7 @@ function refreshPickCounter(pickId) {
   const sel = (grp.courses||[]).filter(c => ST[c.code]?.s && ST[c.code].s!=='none').length;
   const el = document.getElementById(pickId+'-cnt');
   if (!el) return;
-  el.textContent = `เลือกแล้ว ${sel} / ${grp.pick}`;
+  el.textContent = T[lang].selCount(sel, grp.pick);
   el.className = 'pick-cnt ' + (sel >= grp.pick ? 'ok' : 'ng');
 }
 
@@ -1063,11 +1194,11 @@ function renderCustom(type) {
   const arr = type==='minor'?customMinor:customFree;
   const list = document.getElementById('list-'+type);
   if (!list) return;
-  if (arr.length===0) { list.innerHTML='<p style="font-size:12.5px;color:#a0aec0;padding:8px 4px">ยังไม่ได้เพิ่มวิชา</p>'; return; }
+  if (arr.length===0) { list.innerHTML='<p style="font-size:12.5px;color:#a0aec0;padding:8px 4px">'+T[lang].noCustom+'</p>'; return; }
   list.innerHTML = arr.map((c,i)=>`
     <div class="custom-item">
       <button class="s-btn ${c.s}" onclick="cycleCustom('${type}',${i})" style="font-size:11.5px;padding:3px 9px">
-        ${c.s==='current'?'กำลังเรียน 🟣':'ผ่านแล้ว ✅'}
+        ${c.s==='current'?T[lang].sCur:T[lang].sDone}
       </button>
       <span style="font-weight:700;font-size:12.5px;min-width:54px">${c.code}</span>
       <span style="flex:1;font-size:12.5px">${c.name}</span>
@@ -1181,8 +1312,8 @@ function generateResult() {
 
   // Build tree inner for Core
   const coreInner = `<ul class="tree">
-    ${sub('crq','วิชาแกนบังคับ',`<div class="course-list">${secChips('core_req')}</div>`)}
-    ${sub('cel','วิชาแกนเลือก',`<div class="course-list">${secChips('core_elec')}</div>`)}
+    ${sub('crq',T[lang].coreReqNode,`<div class="course-list">${secChips('core_req')}</div>`)}
+    ${sub('cel',T[lang].coreElecNode,`<div class="course-list">${secChips('core_elec')}</div>`)}
   </ul>`;
 
   // Build major elec inner
@@ -1198,17 +1329,17 @@ function generateResult() {
     const secA = SECTIONS.find(x=>x.id==='major_elec_a');
     const secB = SECTIONS.find(x=>x.id==='major_elec_b');
     majElecInner = `<ul class="tree">
-      ${sub('mela','กลุ่ม A — เลือกอย่างน้อย 1 วิชา',`<div class="course-list">${secChips('major_elec_a')}</div>`)}
-      ${sub('melb','กลุ่ม B — รายวิชาเลือก',`<div class="course-list">${secChips('major_elec_b')}</div>`)}
+      ${sub('mela',T[lang].elecGroupA,`<div class="course-list">${secChips('major_elec_a')}</div>`)}
+      ${sub('melb',T[lang].elecGroupB,`<div class="course-list">${secChips('major_elec_b')}</div>`)}
     </ul>`;
   }
 
   const minorInner = customMinor.length
     ? `<div class="course-list">${customMinor.map(c=>`<span class="course-chip ${c.s==='done'?'done':'current'}">${c.code} ${c.name} ${c.s==='done'?'✅':'🟣'}</span>`).join('')}</div>`
-    : `<div class="course-list"><p class="note">📌 ยังไม่ได้เพิ่มวิชาโท</p></div>`;
+    : `<div class="course-list"><p class="note">${T[lang].noMinorAdded}</p></div>`;
   const freeInner = customFree.length
     ? `<div class="course-list">${customFree.map(c=>`<span class="course-chip ${c.s==='done'?'done':'current'}">${c.code} ${c.name} ${c.s==='done'?'✅':'🟣'}</span>`).join('')}</div>`
-    : `<div class="course-list"><p class="note">📌 ยังไม่ได้เพิ่มวิชาเลือกเสรี</p></div>`;
+    : `<div class="course-list"><p class="note">${T[lang].noFreeAdded}</p></div>`;
 
   // Section numbering for result tree
   let nodeNum = 1;
@@ -1218,38 +1349,39 @@ function generateResult() {
   const frn = n();
 
   const melLabel = !use2025
-    ? (SECTIONS.find(x=>x.id==='major_elec')?.label || 'วิชาเอกเลือก')
-    : 'วิชาเอกเลือก กลุ่ม A + B';
+    ? (SECTIONS.find(x=>x.id==='major_elec')?.label || T[lang].majElecNode)
+    : T[lang].elecAB;
   const melCurTotal = !use2025
     ? (mel.cur)
     : (mela.cur + melb.cur);
 
+  const t = T[lang];
   const html=`
-    <h1 class="t-title">🎓 แผนการเรียน — เศรษฐศาสตรบัณฑิต มช.</h1>
-    <p class="subtitle">${getCurriculumLabel()} (≥${totalCr} หน่วยกิต) | ขึ้นปี ${yr} เทอม ${sem}</p>
+    <h1 class="t-title">${t.resultTitle}</h1>
+    <p class="subtitle">${getCurriculumLabel()} (≥${totalCr} ${t.creditUnit}) | ${t.yearSem(yr,sem)}</p>
     <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
-    <p style="font-size:13px;color:#718096;margin-bottom:12px">เรียนแล้ว ${totalDone} / ${totalCr} หน่วยกิต (${pct}%)</p>
+    <p style="font-size:13px;color:#718096;margin-bottom:12px">${t.creditsDone(totalDone,totalCr,pct)}</p>
     <div class="legend">
-      <span>สัญลักษณ์:</span>
-      <span class="course-chip done" style="margin:0">✅ ผ่านแล้ว</span>
-      <span class="course-chip current" style="margin:0">🟣 กำลังเรียน</span>
-      <span class="course-chip opt" style="margin:0">— ยังไม่เรียน</span>
+      <span>${t.legLabel}</span>
+      <span class="course-chip done" style="margin:0">${t.legPassed}</span>
+      <span class="course-chip current" style="margin:0">${t.legCur}</span>
+      <span class="course-chip opt" style="margin:0">${t.legNone}</span>
     </div>
     <div class="summary-grid">
-      <div class="card ${geS}"><div class="card-label">GE</div><div class="card-value">${geCr}/${secGe?.req||24}</div></div>
-      <div class="card ${coreS}"><div class="card-label">วิชาแกน</div><div class="card-value">${coreCr}/${coreReq}</div></div>
-      <div class="card ${majS}"><div class="card-label">วิชาเอกบังคับ</div><div class="card-value">${majReqCr}/${secMrq?.req||39}</div></div>
-      <div class="card ${melS}"><div class="card-label">วิชาเอกเลือก</div><div class="card-value">${majElecCr}/${majElecReq}</div></div>
-      ${showMinor ? `<div class="card ${minS}"><div class="card-label">วิชาโท</div><div class="card-value">${minDone}/15</div></div>` : ''}
-      <div class="card ${freS}"><div class="card-label">เลือกเสรี</div><div class="card-value">${freDone}/6</div></div>
+      <div class="card ${geS}"><div class="card-label">${t.cardLabels[0]}</div><div class="card-value">${geCr}/${secGe?.req||24}</div></div>
+      <div class="card ${coreS}"><div class="card-label">${t.cardLabels[1]}</div><div class="card-value">${coreCr}/${coreReq}</div></div>
+      <div class="card ${majS}"><div class="card-label">${t.cardLabels[2]}</div><div class="card-value">${majReqCr}/${secMrq?.req||39}</div></div>
+      <div class="card ${melS}"><div class="card-label">${t.cardLabels[3]}</div><div class="card-value">${majElecCr}/${majElecReq}</div></div>
+      ${showMinor ? `<div class="card ${minS}"><div class="card-label">${t.cardLabels[4]}</div><div class="card-value">${minDone}/15</div></div>` : ''}
+      <div class="card ${freS}"><div class="card-label">${t.cardLabels[5]}</div><div class="card-value">${freDone}/6</div></div>
     </div>
     <ul class="tree">
-      ${node('r-ge',`${gn}. หมวด GE`,cr2(geCr,ge.cur,secGe?.req||24),geS,geInner,'open')}
-      ${node('r-core',`${cn}. วิชาแกน`,cr2(coreCr,crq.cur+cel.cur,coreReq),coreS,coreInner)}
-      ${node('r-mrq',`${mrn}. วิชาเอกบังคับ (${secMrq?.req||39} cr)`,cr2(majReqCr,mrq.cur,secMrq?.req||39),majS,`<div class="course-list">${secChips('major_req')}</div>`)}
+      ${node('r-ge',`${gn}. ${t.geNode}`,cr2(geCr,ge.cur,secGe?.req||24),geS,geInner,'open')}
+      ${node('r-core',`${cn}. ${t.coreNode}`,cr2(coreCr,crq.cur+cel.cur,coreReq),coreS,coreInner)}
+      ${node('r-mrq',`${mrn}. ${t.majReqNode} (${secMrq?.req||39} cr)`,cr2(majReqCr,mrq.cur,secMrq?.req||39),majS,`<div class="course-list">${secChips('major_req')}</div>`)}
       ${node('r-mel',`${men}. ${melLabel}`,cr2(majElecCr,melCurTotal,majElecReq),melS,majElecInner)}
-      ${showMinor ? node('r-min',`${minn}. วิชาโท (15 cr)`,cr2(minDone,minCur,15),minS,minorInner) : ''}
-      ${node('r-fre',`${frn}. วิชาเลือกเสรี (6 cr)`,cr2(freDone,freCur,6),freS,freeInner)}
+      ${showMinor ? node('r-min',`${minn}. ${t.minorNode}`,cr2(minDone,minCur,15),minS,minorInner) : ''}
+      ${node('r-fre',`${frn}. ${t.freeNode}`,cr2(freDone,freCur,6),freS,freeInner)}
     </ul>`;
 
   document.getElementById('result-content').innerHTML = html;
@@ -1278,6 +1410,7 @@ function goBack() {
   updateMinorRowVisibility();
   SECTIONS = buildSections();
   updateCurrTag();
+  applyTranslations();
   updateHeaderSubtitle();
   buildForm();
 })();
