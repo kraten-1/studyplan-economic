@@ -9,26 +9,32 @@
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'Sarabun',sans-serif;font-size:15px;background:#fff0f5;color:#2d3748}
 
-    /* ════════════ SETUP ════════════ */
-    .setup-wrap{max-width:740px;margin:0 auto;padding:24px 14px 40px}
+    /* ── Segmented toggle ── */
+    .seg-wrap{display:inline-flex;background:#e2e8f0;border-radius:22px;padding:3px;gap:0}
+    .seg-opt{border:none;padding:5px 16px;border-radius:19px;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;color:#718096;background:transparent;white-space:nowrap;line-height:1.4}
+    .seg-opt.active{background:#fff;color:#2d3748;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+    .seg-opt:disabled{opacity:.38;cursor:not-allowed}
+    /* Language toggle – fixed top-right */
+    .lang-toggle{position:fixed;top:14px;right:14px;z-index:999;box-shadow:0 2px 8px rgba(0,0,0,.13);border-radius:22px}
+    /* Program selector */
+    .prog-row{display:flex;justify-content:center;margin-bottom:20px}
+    .prog-seg .seg-opt{padding:9px 28px;font-size:15px}
+    .prog-seg .seg-opt.active{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;box-shadow:0 2px 8px rgba(102,126,234,.4)}
 
+    /* SETUP */
+    .setup-wrap{max-width:740px;margin:0 auto;padding:24px 14px 40px}
     .setup-header{text-align:center;margin-bottom:18px}
     .setup-header h1{font-size:24px;font-weight:700;color:#1a365d}
     .setup-header p{color:#718096;font-size:13.5px;margin-top:5px;line-height:1.5}
-
-    /* tip bar */
     .tip-bar{background:#fffbeb;border:1px solid #f6e05e;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:#744210;display:flex;gap:8px;align-items:flex-start}
     .tip-bar .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
     .tip-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap}
     .tip-chip.none   {background:#edf2f7;color:#718096}
     .tip-chip.current{background:#e9d8fd;color:#553c9a}
     .tip-chip.done   {background:#c6f6d5;color:#22543d}
-
     .year-row{display:flex;align-items:center;gap:12px;background:#fff;border-radius:12px;padding:13px 16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
     .year-row label{font-weight:600;white-space:nowrap;font-size:14px}
     .year-row select{flex:1;padding:7px 10px;border:1px solid #e2e8f0;border-radius:8px;font-family:'Sarabun',sans-serif;font-size:14px}
-
-    /* Accordion wrapper */
     .acc-section{background:#fff;border-radius:12px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.07);overflow:hidden}
     .acc-header{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;user-select:none;font-weight:700;font-size:14.5px;color:#1a365d}
     .acc-header:hover{background:#f7fafc}
@@ -36,21 +42,15 @@
     .acc-cr-badge{font-size:12px;padding:2px 9px;border-radius:10px;background:#e2e8f0;color:#4a5568;font-weight:600}
     .acc-body{border-top:2px solid #e2e8f0;display:none}
     .acc-body.open{display:block}
-
-    /* ── Required group ── */
     .grp-req-hdr{display:flex;align-items:center;gap:8px;padding:9px 14px;background:#f7fafc;border-bottom:1px solid #e2e8f0}
     .grp-req-hdr .lbl{font-size:13px;font-weight:700;color:#2d3748}
     .tag-req{font-size:11px;background:#e2e8f0;color:#4a5568;padding:2px 8px;border-radius:20px;font-weight:600}
-
-    /* ── Pick group ── */
     .grp-pick{margin:10px 12px;border:2px solid #90cdf4;border-radius:10px;overflow:hidden}
     .grp-pick-hdr{background:#ebf8ff;padding:9px 13px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
     .grp-pick-title{font-size:13px;font-weight:700;color:#2b6cb0}
     .pick-cnt{font-size:12px;padding:3px 10px;border-radius:20px;font-weight:700;transition:all .2s}
     .pick-cnt.ok{background:#c6f6d5;color:#22543d}
     .pick-cnt.ng{background:#fed7d7;color:#c53030}
-
-    /* ── Course rows (table-like) ── */
     .tbl-head{display:grid;grid-template-columns:62px 1fr 38px 130px;gap:6px;padding:5px 12px;font-size:11px;color:#a0aec0;font-weight:600;letter-spacing:.03em;border-bottom:1px solid #f0f4f8;text-transform:uppercase}
     .c-row{display:grid;grid-template-columns:62px 1fr 38px 130px;gap:6px;padding:6px 12px;align-items:center;transition:background .1s;border-bottom:1px solid #f7fafc}
     .c-row:last-child{border-bottom:none}
@@ -61,15 +61,11 @@
     .td-name{font-size:13px;line-height:1.3}
     .td-cr{font-size:12px;color:#a0aec0;text-align:center}
     .td-act{display:flex;align-items:center;gap:5px;justify-content:flex-end}
-
-    /* 3-state button */
     .s-btn{font-family:'Sarabun',sans-serif;font-size:12px;font-weight:600;border:1.5px solid transparent;border-radius:20px;padding:4px 11px;cursor:pointer;white-space:nowrap;transition:all .15s}
     .s-btn.none   {background:#edf2f7;color:#718096;border-color:#e2e8f0}
     .s-btn.current{background:#e9d8fd;color:#553c9a;border-color:#d6bcfa}
     .s-btn.done   {background:#c6f6d5;color:#22543d;border-color:#9ae6b4}
     .g-input{width:42px;padding:3px 5px;border:1.5px solid #e2e8f0;border-radius:6px;font-family:'Sarabun',sans-serif;font-size:12px;text-align:center}
-
-    /* Custom (โท/เสรี) */
     .custom-add{display:flex;gap:7px;padding:8px 12px;flex-wrap:wrap;background:#f7fafc;border-bottom:1px solid #e2e8f0}
     .custom-add input{flex:1;min-width:80px;padding:5px 9px;border:1px solid #e2e8f0;border-radius:7px;font-family:'Sarabun',sans-serif;font-size:13px}
     .custom-add input::placeholder{color:#a0aec0}
@@ -78,11 +74,10 @@
     .custom-list{padding:0 12px 6px}
     .custom-item{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid #f0f4f8;font-size:13px}
     .btn-remove{background:none;border:none;color:#fc8181;cursor:pointer;font-size:17px;padding:0 3px;line-height:1}
-
     .btn-gen{display:block;width:100%;padding:15px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:12px;font-family:'Sarabun',sans-serif;font-size:16px;font-weight:700;cursor:pointer;margin-top:20px}
     .btn-gen:hover{opacity:.9}
 
-    /* ════════════ RESULT ════════════ */
+    /* RESULT */
     .result-wrap{max-width:820px;margin:0 auto;padding:24px 14px}
     .btn-back{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:7px 14px;cursor:pointer;font-family:'Sarabun',sans-serif;font-size:14px;color:#4a5568;margin-bottom:16px}
     .btn-back:hover{background:#f7fafc}
@@ -117,8 +112,6 @@
     .collapsible{display:none}.collapsible.open{display:block}
     .grade-tag{font-size:10.5px;color:#718096}
     .note{font-size:12px;color:#718096;padding:4px 10px;font-style:italic}
-
-    /* Support */
     .support-box{margin-top:30px;background:linear-gradient(135deg,#faf5ff,#f0e6ff);border:1px solid #d6bcfa;border-radius:16px;padding:22px;text-align:center}
     .support-box h3{font-size:16px;font-weight:700;color:#553c9a;margin-bottom:6px}
     .support-box p{font-size:13.5px;color:#718096;margin-bottom:14px}
@@ -129,88 +122,86 @@
 
     @media(max-width:560px){
       .tbl-head,.c-row{grid-template-columns:56px 1fr 28px auto}
-      .td-name{font-size:12px}
-      .s-btn{font-size:11px;padding:3px 8px}
+      .td-name{font-size:12px}.s-btn{font-size:11px;padding:3px 8px}
+      .prog-seg .seg-opt{padding:8px 18px;font-size:14px}
     }
   </style>
 </head>
 <body>
 
-<!-- ══════════ SCREEN 1: SETUP ══════════ -->
-<div id="screen-setup">
-  <div class="setup-wrap">
-    <div class="setup-header">
-      <h1>🎓 CMU Econ Planner</h1>
-      <p>กรอกวิชาที่เคยเรียนมาแล้ว แล้วระบบจะสรุปแผนการเรียนให้อัตโนมัติ<br>หลักสูตรเศรษฐศาสตรบัณฑิต มช. แบบ 2 สหกิจศึกษา (135 หน่วยกิต)</p>
-    </div>
-
-    <div class="tip-bar">
-      <span>💡</span>
-      <div>
-        <strong>วิธีกรอก:</strong> คลิกที่ปุ่มด้านขวาของแต่ละวิชาเพื่อเปลี่ยนสถานะ
-        <div class="chips">
-          <span class="tip-chip none">ยังไม่เรียน</span>
-          <span style="color:#718096;font-size:13px">→</span>
-          <span class="tip-chip current">🟣 กำลังเรียนอยู่</span>
-          <span style="color:#718096;font-size:13px">→</span>
-          <span class="tip-chip done">✅ ผ่านแล้ว</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="year-row">
-      <label>ปัจจุบันกำลังขึ้น</label>
-      <select id="sel-ys">
-        <option value="1-1">ปี 1 เทอม 1</option>
-        <option value="1-2">ปี 1 เทอม 2</option>
-        <option value="2-1">ปี 2 เทอม 1</option>
-        <option value="2-2">ปี 2 เทอม 2</option>
-        <option value="3-1">ปี 3 เทอม 1</option>
-        <option value="3-2">ปี 3 เทอม 2</option>
-        <option value="4-1">ปี 4 เทอม 1</option>
-        <option value="4-2">ปี 4 เทอม 2</option>
-      </select>
-    </div>
-
-    <div id="form-sections"></div>
-    <button class="btn-gen" onclick="generateResult()">ดูแผนการเรียนของฉัน →</button>
+<!-- Language toggle (fixed top-right) -->
+<div class="lang-toggle">
+  <div class="seg-wrap">
+    <button class="seg-opt active" id="lt-th" onclick="setLang('th')">TH</button>
+    <button class="seg-opt" id="lt-en" onclick="setLang('en')">EN</button>
   </div>
 </div>
 
-<!-- ══════════ SCREEN 2: RESULT ══════════ -->
+<!-- SCREEN 1: SETUP -->
+<div id="screen-setup">
+  <div class="setup-wrap">
+
+    <!-- Program selector -->
+    <div class="prog-row">
+      <div class="seg-wrap prog-seg">
+        <button class="seg-opt active" id="pt-regular" onclick="setProg('regular')">ภาคปกติ</button>
+        <button class="seg-opt"        id="pt-intl"    onclick="setProg('intl')">นานาชาติ</button>
+      </div>
+    </div>
+
+    <div class="setup-header">
+      <h1>🎓 CMU Econ Planner</h1>
+      <p id="txt-subtitle"></p>
+    </div>
+    <div class="tip-bar">
+      <span>💡</span>
+      <div>
+        <strong id="txt-tip-title"></strong> <span id="txt-tip-body"></span>
+        <div class="chips">
+          <span class="tip-chip none"    id="txt-chip-none"></span>
+          <span style="color:#718096;font-size:13px">→</span>
+          <span class="tip-chip current" id="txt-chip-cur"></span>
+          <span style="color:#718096;font-size:13px">→</span>
+          <span class="tip-chip done"    id="txt-chip-done"></span>
+        </div>
+      </div>
+    </div>
+    <div class="year-row">
+      <label id="txt-year-label"></label>
+      <select id="sel-ys"></select>
+    </div>
+    <div id="form-sections"></div>
+    <button class="btn-gen" id="txt-btn-gen" onclick="generateResult()"></button>
+  </div>
+</div>
+
+<!-- SCREEN 2: RESULT -->
 <div id="screen-result" style="display:none">
   <div class="result-wrap">
-    <button class="btn-back" onclick="goBack()">← แก้ไขข้อมูล</button>
+    <button class="btn-back" id="txt-btn-back" onclick="goBack()"></button>
     <div id="result-content"></div>
     <div class="support-box">
-      <h3>💜 สนับสนุนเราได้ที่นี่</h3>
-      <p>ถ้าเครื่องมือนี้มีประโยชน์ ติดตามและสนับสนุน MeClip ได้ที่ช่องทางด้านล่างนี้เลย</p>
+      <h3>💜 <span id="txt-support-title"></span></h3>
+      <p id="txt-support-body"></p>
       <div class="support-links">
-        <!-- Instagram -->
         <a href="https://www.instagram.com/meclips_official/" class="sup-link" target="_blank" rel="noopener" title="Instagram">
           <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <radialGradient id="ig-rg" cx="30%" cy="107%" r="150%">
-                <stop offset="0%" stop-color="#fdf497"/>
-                <stop offset="20%" stop-color="#fd5949"/>
-                <stop offset="55%" stop-color="#d6249f"/>
-                <stop offset="90%" stop-color="#285AEB"/>
-              </radialGradient>
-            </defs>
+            <defs><radialGradient id="ig-rg" cx="30%" cy="107%" r="150%">
+              <stop offset="0%" stop-color="#fdf497"/><stop offset="20%" stop-color="#fd5949"/>
+              <stop offset="55%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/>
+            </radialGradient></defs>
             <rect width="48" height="48" rx="12" fill="url(#ig-rg)"/>
             <rect x="11" y="11" width="26" height="26" rx="7" fill="none" stroke="#fff" stroke-width="3"/>
             <circle cx="24" cy="24" r="6.5" fill="none" stroke="#fff" stroke-width="3"/>
             <circle cx="33.5" cy="14.5" r="2.2" fill="#fff"/>
           </svg>
         </a>
-        <!-- X / Twitter -->
-        <a href="https://x.com/meclipthailand" class="sup-link" target="_blank" rel="noopener" title="X (Twitter)">
+        <a href="https://x.com/meclipthailand" class="sup-link" target="_blank" rel="noopener" title="X">
           <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
             <rect width="48" height="48" rx="12" fill="#000"/>
             <path fill="#fff" d="M36.5 9h-5L24 18.8 16.5 9h-5l10.2 14.1L11 39h5l8.8-10.2L33.5 39h5L27.5 24.5z M34 36.5h-2.4L14 11.5h2.4z"/>
           </svg>
         </a>
-        <!-- Facebook -->
         <a href="https://web.facebook.com/profile.php?id=61574323546875" class="sup-link" target="_blank" rel="noopener" title="Facebook">
           <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
             <rect width="48" height="48" rx="12" fill="#1877F2"/>
@@ -224,57 +215,130 @@
 
 <script>
 // ══════════════════════════════════════════
-// COURSE DATABASE
+// STATE
+// ══════════════════════════════════════════
+let lang = 'th';
+let prog = 'regular';
+const ST = {};
+let customMinor = [];
+let customFree  = [];
+
+function getActiveSections() { return prog === 'intl' ? SECTIONS_INTL : SECTIONS; }
+
+// ══════════════════════════════════════════
+// TRANSLATIONS
+// ══════════════════════════════════════════
+const T = {
+  th: {
+    progRegular: 'ภาคปกติ', progIntl: 'นานาชาติ',
+    subtitle: 'กรอกวิชาที่เคยเรียนมาแล้ว แล้วระบบจะสรุปแผนการเรียนให้อัตโนมัติ\nหลักสูตรเศรษฐศาสตรบัณฑิต มช. แบบ 2 สหกิจศึกษา (135 หน่วยกิต)',
+    tipTitle: 'วิธีกรอก:', tipBody: 'คลิกที่ปุ่มด้านขวาของแต่ละวิชาเพื่อเปลี่ยนสถานะ',
+    chipNone: 'ยังไม่เรียน', chipCur: 'กำลังเรียนอยู่ 🟣', chipDone: 'ผ่านแล้ว ✅',
+    yearLabel: 'ปัจจุบันกำลังขึ้น',
+    yearOpts: ['ปี 1 เทอม 1','ปี 1 เทอม 2','ปี 2 เทอม 1','ปี 2 เทอม 2','ปี 3 เทอม 1','ปี 3 เทอม 2','ปี 4 เทอม 1','ปี 4 เทอม 2'],
+    btnGen: 'ดูแผนการเรียนของฉัน →', btnBack: '← แก้ไขข้อมูล',
+    tagReq: 'บังคับ', pickLabel: (n,t) => `เลือกแล้ว ${n} / ${t}`,
+    sNone: 'ยังไม่เรียน', sCur: 'กำลังเรียน 🟣', sDone: 'ผ่านแล้ว ✅',
+    grade: 'เกรด',
+    colCode:'รหัส', colName:'ชื่อวิชา', colCr:'cr', colStatus:'สถานะ',
+    customCode:'รหัสวิชา เช่น 707201', customName:'ชื่อวิชา', customCr:'cr',
+    btnAdd:'+ เพิ่ม', noCustom:'ยังไม่ได้เพิ่มวิชา — กรอกช่องด้านบนแล้วกด + เพิ่ม',
+    resultTitle: 'แผนการเรียน — เศรษฐศาสตรบัณฑิต มช.',
+    resultSub: (yr,sem) => `แบบ 2 สหกิจศึกษา (≥135 หน่วยกิต) | ขึ้นปี ${yr} เทอม ${sem}`,
+    resultSubIntl: (yr,sem) => `หลักสูตรนานาชาติ (≥135 หน่วยกิต) | ขึ้นปี ${yr} เทอม ${sem}`,
+    crDone: (d,r) => `เรียนแล้ว ${d} / ${r} หน่วยกิต`,
+    legPassed: '✅ ผ่านแล้ว', legCur: '🟣 กำลังเรียน', legNone: '— ยังไม่เรียน',
+    cards: ['GE','วิชาแกน','วิชาเอกบังคับ','สหกิจ+เอกเลือก','วิชาโท','เลือกเสรี'],
+    nodeLabels: ['1. หมวด GE','2. วิชาแกน','3. วิชาเอกบังคับ (42 cr)','4. สหกิจ + วิชาเอกเลือก','5. วิชาโท (15 cr)','6. วิชาเลือกเสรี (6 cr)'],
+    subGe: ['กลุ่มบุคคลผู้มีความรู้','กลุ่มผู้ร่วมสร้างสรรค์นวัตกรรม','กลุ่มพลเมืองที่เข้มแข็ง'],
+    subCore: ['วิชาแกนบังคับ','วิชาแกนเลือก'],
+    coopLabel: 'สหกิจศึกษา (บังคับ 6 cr)', electLabel: 'วิชาเอกเลือก ≥6 cr',
+    noMinor: '📌 ยังไม่ได้เพิ่มวิชาโท', noFree: '📌 ยังไม่ได้เพิ่มวิชาเลือกเสรี',
+    supportTitle: 'สนับสนุนเราได้ที่นี่',
+    supportBody: 'ถ้าเครื่องมือนี้มีประโยชน์ ติดตามและสนับสนุน MeClip ได้ที่ช่องทางด้านล่างนี้เลย',
+  },
+  en: {
+    progRegular: 'Regular', progIntl: 'International',
+    subtitle: 'Enter courses you have already taken and we\'ll generate your study plan automatically.\nBachelor of Economics, CMU (135 credits)',
+    tipTitle: 'How to use:', tipBody: 'Click the button on the right of each course to change its status',
+    chipNone: 'Not taken', chipCur: 'In progress 🟣', chipDone: 'Passed ✅',
+    yearLabel: 'Currently in',
+    yearOpts: ['Year 1 Sem 1','Year 1 Sem 2','Year 2 Sem 1','Year 2 Sem 2','Year 3 Sem 1','Year 3 Sem 2','Year 4 Sem 1','Year 4 Sem 2'],
+    btnGen: 'View My Study Plan →', btnBack: '← Edit Info',
+    tagReq: 'Required', pickLabel: (n,t) => `Selected ${n} / ${t}`,
+    sNone: 'Not taken', sCur: 'In progress 🟣', sDone: 'Passed ✅',
+    grade: 'Grade',
+    colCode:'Code', colName:'Course Name', colCr:'Cr', colStatus:'Status',
+    customCode:'Code e.g. 707201', customName:'Course name', customCr:'cr',
+    btnAdd:'+ Add', noCustom:'No courses added yet — fill in above and click + Add',
+    resultTitle: 'Study Plan — Bachelor of Economics, CMU',
+    resultSub: (yr,sem) => `Co-op Program Type 2 (≥135 credits) | Year ${yr} Semester ${sem}`,
+    resultSubIntl: (yr,sem) => `International Program (≥135 credits) | Year ${yr} Semester ${sem}`,
+    crDone: (d,r) => `Completed ${d} / ${r} credits`,
+    legPassed: '✅ Passed', legCur: '🟣 In progress', legNone: '— Not taken',
+    cards: ['GE','Core','Major Req.','Coop+Elec','Minor','Free Elec.'],
+    nodeLabels: ['1. General Education (GE)','2. Core Courses','3. Major Required (42 cr)','4. Coop + Major Elective','5. Minor (15 cr)','6. Free Elective (6 cr)'],
+    subGe: ['Knowledge Group','Innovation & Creativity Group','Active Citizenship Group'],
+    subCore: ['Core Required','Core Elective'],
+    coopLabel: 'Cooperative Education (required 6 cr)', electLabel: 'Major Elective ≥6 cr',
+    noMinor: '📌 No minor courses added yet', noFree: '📌 No free elective courses added yet',
+    supportTitle: 'Support Us',
+    supportBody: 'If this tool was helpful, follow and support MeClip through the channels below!',
+  }
+};
+
+// ══════════════════════════════════════════
+// COURSE DATABASE — ภาคปกติ (Regular)
 // ══════════════════════════════════════════
 const SECTIONS = [
-  { id:'ge', label:'1. หมวดวิชาศึกษาทั่วไป (GE)', req:30, groups:[
-    { label:'กลุ่มบุคคลผู้มีความรู้ — ต้องเรียนทั้งหมด', courses:[
+  { id:'ge', label:'1. หมวดวิชาศึกษาทั่วไป (GE)', labelEn:'1. General Education (GE)', req:30, groups:[
+    { label:'กลุ่มบุคคลผู้มีความรู้ — ต้องเรียนทั้งหมด', labelEn:'Knowledge Group — Required (all)', courses:[
       {code:'001101',name:'Fundamental English 1',cr:3},
       {code:'001102',name:'Fundamental English 2',cr:3},
       {code:'001201',name:'Critical Reading & Effective Writing',cr:3},
       {code:'001228',name:'English for Business and Economics',cr:3},
     ]},
-    { label:'บุคคลผู้มีความรู้ — เลือก 1 จากกลุ่ม IT/ดิจิทัล', pick:1, courses:[
+    { label:'บุคคลผู้มีความรู้ — เลือก 1 จากกลุ่ม IT/ดิจิทัล', labelEn:'Knowledge — Choose 1 (IT/Digital)', pick:1, courses:[
       {code:'261111',name:'Internet and Online Community',cr:3},
       {code:'204100',name:'IT and Modern Life',cr:3},
       {code:'953111',name:'Software for Everyday Life',cr:3},
     ]},
-    { label:'บุคคลผู้มีความรู้ — เลือก 1 จากกลุ่มสื่อสาร/สิทธิ', pick:1, courses:[
+    { label:'บุคคลผู้มีความรู้ — เลือก 1 จากกลุ่มสื่อสาร/สิทธิ', labelEn:'Knowledge — Choose 1 (Communication/Rights)', pick:1, courses:[
       {code:'176104',name:'Rights and Duties of Citizen in Digital Age',cr:3},
       {code:'851100',name:'Introduction to Communication',cr:3},
       {code:'888102',name:'Big Data for Business',cr:3},
     ]},
-    { label:'กลุ่มผู้ร่วมสร้างสรรค์นวัตกรรม — ต้องเรียน', courses:[
+    { label:'กลุ่มผู้ร่วมสร้างสรรค์นวัตกรรม — ต้องเรียน', labelEn:'Innovation Group — Required', courses:[
       {code:'703103',name:'Introduction to Entrepreneurship and Business',cr:3},
     ]},
-    { label:'ผู้ร่วมสร้างสรรค์นวัตกรรม — เลือก 1', pick:1, courses:[
+    { label:'ผู้ร่วมสร้างสรรค์นวัตกรรม — เลือก 1', labelEn:'Innovation Group — Choose 1', pick:1, courses:[
       {code:'201114',name:"Environmental Science in Today's World",cr:3},
       {code:'063101',name:'Learning for Self-Development',cr:3},
       {code:'851103',name:'Life and Society through Media',cr:3},
     ]},
-    { label:'กลุ่มพลเมืองที่เข้มแข็ง — ต้องเรียน', courses:[
+    { label:'กลุ่มพลเมืองที่เข้มแข็ง — ต้องเรียน', labelEn:'Active Citizenship Group — Required', courses:[
       {code:'140104',name:'Citizenship',cr:3},
     ]},
-    { label:'พลเมืองที่เข้มแข็ง — เลือก 1', pick:1, courses:[
+    { label:'พลเมืองที่เข้มแข็ง — เลือก 1', labelEn:'Active Citizenship — Choose 1', pick:1, courses:[
       {code:'057139',name:'Sport and Adventure Tourism',cr:3},
       {code:'154104',name:'Environmental Conservation',cr:3},
       {code:'951100',name:'Modern Life and Animation',cr:3},
     ]},
   ]},
-  { id:'core_req', label:'2. วิชาแกนบังคับ (15 cr)', req:15, groups:[
-    { label:'ต้องเรียนทั้งหมด', courses:[
+  { id:'core_req', label:'2. วิชาแกนบังคับ (15 cr)', labelEn:'2. Core Required (15 cr)', req:15, groups:[
+    { label:'ต้องเรียนทั้งหมด', labelEn:'Required — take all', courses:[
       {code:'127101',name:'Introduction to Political Science',cr:3},
       {code:'206171',name:'General Mathematics 1',cr:3},
       {code:'208271',name:'Elementary Statistics for Social Sciences 1',cr:3},
       {code:'701100',name:'Elementary Accounting 1',cr:3},
     ]},
-    { label:'วิชากฎหมาย — เลือก 1', pick:1, courses:[
+    { label:'วิชากฎหมาย — เลือก 1', labelEn:'Law Course — Choose 1', pick:1, courses:[
       {code:'176101',name:'Introduction to Law',cr:3},
       {code:'176220',name:'Fundamental Business Law',cr:3},
     ]},
   ]},
-  { id:'core_elec', label:'3. วิชาแกนเลือก (≥15 cr — เลือก ≥5 วิชา)', req:15, groups:[
-    { label:'เลือก 5 วิชาขึ้นไปจากรายการด้านล่าง', pick:5, courses:[
+  { id:'core_elec', label:'3. วิชาแกนเลือก (≥15 cr — เลือก ≥5 วิชา)', labelEn:'3. Core Elective (≥15 cr — choose ≥5)', req:15, groups:[
+    { label:'เลือก 5 วิชาขึ้นไปจากรายการด้านล่าง', labelEn:'Choose 5 or more courses from the list below', pick:5, courses:[
       {code:'702100',name:'Introduction to Entrepreneurial Finance',cr:3},
       {code:'126101',name:'Introduction to International Relations',cr:3},
       {code:'013103',name:'General Psychology',cr:3},
@@ -290,8 +354,8 @@ const SECTIONS = [
       {code:'208272',name:'Elementary Statistics for Social Sciences 2',cr:3},
     ]},
   ]},
-  { id:'major_req', label:'4. วิชาเอกบังคับ (42 cr)', req:42, groups:[
-    { label:'ต้องเรียนทั้งหมด 14 วิชา', courses:[
+  { id:'major_req', label:'4. วิชาเอกบังคับ (42 cr)', labelEn:'4. Major Required (42 cr)', req:42, groups:[
+    { label:'ต้องเรียนทั้งหมด 14 วิชา', labelEn:'Required — all 14 courses', courses:[
       {code:'751106',name:'Principles of Economics',cr:3},
       {code:'751202',name:'History of Economic Thought',cr:3},
       {code:'751209',name:'Introduction to Mathematical Economics',cr:3},
@@ -308,28 +372,131 @@ const SECTIONS = [
       {code:'751408',name:'Research Methods in Economics',cr:3},
     ]},
   ]},
-  { id:'coop', label:'5. สหกิจศึกษา (6 cr)', req:6, groups:[
-    { label:'บังคับ 1 วิชา', courses:[
-      {code:'751449',name:'สหกิจศึกษา (Cooperative Education)',cr:6},
+  { id:'coop', label:'5. สหกิจศึกษา (6 cr)', labelEn:'5. Cooperative Education (6 cr)', req:6, groups:[
+    { label:'บังคับ 1 วิชา', labelEn:'Required — 1 course', courses:[
+      {code:'751449',name:'Cooperative Education (สหกิจศึกษา)',cr:6},
     ]},
   ]},
-  { id:'major_elec', label:'6. วิชาเอกเลือก (≥6 cr — เลือก ≥2 วิชา)', req:6, groups:[
-    { label:'เลือก 2 วิชาขึ้นไปจากรายการด้านล่าง', pick:2, courses:[
+  { id:'major_elec', label:'6. วิชาเอกเลือก (≥6 cr — เลือก ≥2 วิชา)', labelEn:'6. Major Elective (≥6 cr — choose ≥2)', req:6, groups:[
+    { label:'เลือก 2 วิชาขึ้นไปจากรายการด้านล่าง', labelEn:'Choose 2 or more courses from the list below', pick:2, courses:[
+      {code:'751220',name:'Economic History',cr:3},{code:'751320',name:'International Business Economics',cr:3},
+      {code:'751321',name:'Community Economic Development',cr:3},{code:'751322',name:'International Political Economy',cr:3},
+      {code:'751323',name:'Modern Chinese Economy',cr:3},{code:'751325',name:'American Marketing Economics',cr:3},
+      {code:'751326',name:'ASEAN Economy in Global Context',cr:3},{code:'751327',name:'ICT Economics & Telecom Policy',cr:3},
+      {code:'751330',name:'Money and Banking',cr:3},{code:'751332',name:'Monetary Theory',cr:3},
+      {code:'751333',name:'Applied Game Theory for Economic Analysis',cr:3},
+      {code:'751340',name:'Introduction to Agricultural Economics',cr:3},{code:'751342',name:'Land Economics',cr:3},
+      {code:'751345',name:'Transportation Economics',cr:3},{code:'751347',name:'Cooperative Economics',cr:3},
+      {code:'751413',name:'Introduction to Input-Output Analysis',cr:3},{code:'751414',name:'Introduction to Applied Econometrics',cr:3},
+      {code:'751416',name:'Mathematical Economics',cr:3},{code:'751417',name:'Managerial Economics',cr:3},
+      {code:'751418',name:'Business Cycle Theory',cr:3},{code:'751419',name:'Economic Theory and Entrepreneurship',cr:3},
+      {code:'751420',name:'International Finance',cr:3},{code:'751421',name:'Economics of Investment',cr:3},
+      {code:'751422',name:'Technical Analysis for Investment',cr:3},
+      {code:'751424',name:'Economic Development of Developing Countries',cr:3},{code:'751425',name:'Economic Growth',cr:3},
+      {code:'751427',name:'Economic Planning',cr:3},{code:'751428',name:'Political Economy',cr:3},
+      {code:'751429',name:'Comparative Economic System',cr:3},{code:'751434',name:'Commercial Banking',cr:3},
+      {code:'751437',name:'Tax System',cr:3},{code:'751440',name:'Labor Economics',cr:3},
+      {code:'751441',name:'Economics of Water Resources',cr:3},{code:'751442',name:'Regional Economics',cr:3},
+      {code:'751443',name:'Industrial Economics',cr:3},{code:'751444',name:'Urban Economics',cr:3},
+      {code:'751445',name:'Natural Resource Allocation and Policy',cr:3},{code:'751446',name:'Economy of Thailand',cr:3},
+      {code:'751447',name:'Seminar in Current Economic Problems',cr:3},{code:'751448',name:'Seminar in Global Investment Issues',cr:3},
+      {code:'751451',name:'Health Economics',cr:3},{code:'751452',name:'Economics of Climate Change',cr:3},
+      {code:'751453',name:'Developing Application for Data Analytics in Economics',cr:3},
+      {code:'751454',name:'Behavioral Economics',cr:3},
+      {code:'751471',name:'Economics of Decentralized Finance',cr:3},{code:'751472',name:'Economics of Tokenomics and NFT',cr:3},
+    ]},
+  ]},
+];
+
+// ══════════════════════════════════════════
+// COURSE DATABASE — นานาชาติ (International)
+// ══════════════════════════════════════════
+const SECTIONS_INTL = [
+  { id:'ge', label:'1. General Education (GE)', labelEn:'1. General Education (GE)', req:30, groups:[
+    { label:'Learner Person — Required (all)', labelEn:'Learner Person — Required (all)', courses:[
+      {code:'001101',name:'Fundamental English 1',cr:3},
+      {code:'001102',name:'Fundamental English 2',cr:3},
+      {code:'001201',name:'Critical Reading and Effective Writing',cr:3},
+      {code:'001228',name:'English for Business and Economics',cr:3},
+    ]},
+    { label:'Learner Person — Choose 1 (IT/Digital)', labelEn:'Learner Person — Choose 1 (IT/Digital)', pick:1, courses:[
+      {code:'204100',name:'Information Technology and Modern Life',cr:3},
+      {code:'261111',name:'Internet and Online Community',cr:3},
+      {code:'953111',name:'Software for Everyday Life',cr:3},
+    ]},
+    { label:'Learner Person — Elective (choose ≥1)', labelEn:'Learner Person — Elective (choose ≥1)', pick:1, courses:[
+      {code:'359206',name:'Landscape, Environment, Behaviors, and Minds',cr:3},
+      {code:'888102',name:'Big Data for Business',cr:3},
+    ]},
+    { label:'Innovative Co-creator — Required', labelEn:'Innovative Co-creator — Required', courses:[
+      {code:'703103',name:'Introduction to Entrepreneurship and Business',cr:3},
+    ]},
+    { label:'Active Citizen — Required', labelEn:'Active Citizen — Required', courses:[
+      {code:'140104',name:'Citizenship',cr:3},
+    ]},
+    { label:'Active Citizen — Elective (choose ≥2)', labelEn:'Active Citizen — Elective (choose ≥2)', pick:2, courses:[
+      {code:'154104',name:'Environmental Conservation',cr:3},
+      {code:'159151',name:'Lanna Society and Culture',cr:3},
+      {code:'951100',name:'Modern Life and Animation',cr:3},
+    ]},
+  ]},
+  { id:'core_req', label:'2. Core Required (18 cr)', labelEn:'2. Core Required (18 cr)', req:18, groups:[
+    { label:'Required — take all', labelEn:'Required — take all', courses:[
+      {code:'206171',name:'General Mathematics I',cr:3},
+      {code:'208271',name:'Elementary Statistics for Social Sciences I',cr:3},
+      {code:'701100',name:'Elementary Accounting',cr:3},
+      {code:'888111',name:'Innovative Entrepreneurship Theory and Practice',cr:3},
+      {code:'888121',name:'Digital Economy',cr:3},
+      {code:'888147',name:'Innovation for Entrepreneur',cr:3},
+    ]},
+  ]},
+  { id:'core_elec', label:'3. Core Elective (≥15 cr — choose ≥5)', labelEn:'3. Core Elective (≥15 cr — choose ≥5)', req:15, groups:[
+    { label:'Choose 5 or more from the list (note: 751325/751419/751447 cannot also count as Major Elective)', labelEn:'Choose 5 or more from the list (note: 751325/751419/751447 cannot also count as Major Elective)', pick:5, courses:[
+      {code:'154281',name:'Economic Geography',cr:3},
+      {code:'176101',name:'Introduction to Law',cr:3},
+      {code:'703322',name:'Communication for Business Results',cr:3},
+      {code:'751325',name:'American Marketing Economics',cr:3},
+      {code:'751419',name:'Economic Theory and Entrepreneurship',cr:3},
+      {code:'751447',name:'Seminar in Current Economic Problems',cr:3},
+      {code:'954140',name:'Information Technology Literacy',cr:3},
+    ]},
+  ]},
+  { id:'major_req', label:'4. Major Required (45 cr)', labelEn:'4. Major Required (45 cr)', req:45, groups:[
+    { label:'Required — all 15 courses', labelEn:'Required — all 15 courses', courses:[
+      {code:'751106',name:'Principles of Economics',cr:3},
+      {code:'751202',name:'History of Economic Thought',cr:3},
+      {code:'751209',name:'Introduction to Mathematical Economics',cr:3},
+      {code:'751301',name:'Microeconomic Theory I',cr:3},
+      {code:'751302',name:'Microeconomic Theory II',cr:3},
+      {code:'751303',name:'Public Finance',cr:3},
+      {code:'751304',name:'Economic Statistics',cr:3},
+      {code:'751305',name:'Econometrics I',cr:3},
+      {code:'751308',name:'Macroeconomic Theory I',cr:3},
+      {code:'751309',name:'Macroeconomic Theory II',cr:3},
+      {code:'751401',name:'International Economics',cr:3},
+      {code:'751403',name:'Econometrics II',cr:3},
+      {code:'751405',name:'Theory of Economic Development',cr:3},
+      {code:'751408',name:'Research Methods in Economics',cr:3},
+      {code:'751409',name:'Research Exercise in Current Economics Issues',cr:3},
+    ]},
+  ]},
+  { id:'major_elec', label:'5. Major Elective (≥21 cr — choose ≥7)', labelEn:'5. Major Elective (≥21 cr — choose ≥7)', req:21, groups:[
+    { label:'Choose 7 or more courses (751325/751419/751447 counted as Core Elective cannot be double-counted here)', labelEn:'Choose 7 or more courses (751325/751419/751447 counted as Core Elective cannot be double-counted here)', pick:7, courses:[
       {code:'751220',name:'Economic History',cr:3},
       {code:'751320',name:'International Business Economics',cr:3},
       {code:'751321',name:'Community Economic Development',cr:3},
       {code:'751322',name:'International Political Economy',cr:3},
       {code:'751323',name:'Modern Chinese Economy',cr:3},
       {code:'751325',name:'American Marketing Economics',cr:3},
-      {code:'751326',name:'ASEAN Economy in Global Context',cr:3},
-      {code:'751327',name:'ICT Economics & Telecom Policy',cr:3},
+      {code:'751326',name:'ASEAN Economy in the Global Economic Context',cr:3},
+      {code:'751327',name:'ICT Economics and Telecommunications Policy',cr:3},
       {code:'751330',name:'Money and Banking',cr:3},
       {code:'751332',name:'Monetary Theory',cr:3},
-      {code:'751333',name:'Applied Game Theory for Economic Analysis',cr:3},
       {code:'751340',name:'Introduction to Agricultural Economics',cr:3},
       {code:'751342',name:'Land Economics',cr:3},
       {code:'751345',name:'Transportation Economics',cr:3},
       {code:'751347',name:'Cooperative Economics',cr:3},
+      {code:'751411',name:'The Economics of European Economic Integration',cr:3},
       {code:'751413',name:'Introduction to Input-Output Analysis',cr:3},
       {code:'751414',name:'Introduction to Applied Econometrics',cr:3},
       {code:'751416',name:'Mathematical Economics',cr:3},
@@ -360,79 +527,144 @@ const SECTIONS = [
       {code:'751453',name:'Developing Application for Data Analytics in Economics',cr:3},
       {code:'751454',name:'Behavioral Economics',cr:3},
       {code:'751471',name:'Economics of Decentralized Finance',cr:3},
-      {code:'751472',name:'Economics of Tokenomics and NFT',cr:3},
+      {code:'751472',name:'Economics of Tokenomics and Non-Fungible Token',cr:3},
     ]},
   ]},
 ];
 
-const ST = {};
-let customMinor = [];
-let customFree  = [];
+// ══════════════════════════════════════════
+// LANGUAGE & PROGRAM
+// ══════════════════════════════════════════
+function setLang(l) {
+  if (prog === 'intl' && l === 'th') return;
+  lang = l;
+  document.documentElement.lang = l;
+  document.getElementById('lt-th').className = 'seg-opt' + (l==='th'?' active':'');
+  document.getElementById('lt-en').className = 'seg-opt' + (l==='en'?' active':'');
+  applyTranslations();
+  buildForm();
+  renderCustom('minor');
+  renderCustom('free');
+}
+
+function setProg(p) {
+  prog = p;
+  document.getElementById('pt-regular').className = 'seg-opt' + (p==='regular'?' active':'');
+  document.getElementById('pt-intl').className    = 'seg-opt' + (p==='intl'?' active':'');
+  const thBtn = document.getElementById('lt-th');
+  if (p === 'intl') {
+    thBtn.disabled = true;
+    setLang('en');
+  } else {
+    thBtn.disabled = false;
+    applyTranslations();
+    buildForm();
+    renderCustom('minor');
+    renderCustom('free');
+  }
+}
+
+function applyTranslations() {
+  const t = T[lang];
+  document.getElementById('pt-regular').textContent  = t.progRegular;
+  document.getElementById('pt-intl').textContent     = t.progIntl;
+  document.getElementById('txt-subtitle').textContent = prog==='intl'
+    ? (lang==='en'
+      ? 'Enter courses you have already taken and we\'ll generate your study plan automatically.\nBachelor of Economics (International Program), CMU — Academic Track (135 credits)'
+      : 'กรอกวิชาที่เคยเรียนมาแล้ว ระบบจะสรุปแผนการเรียนให้อัตโนมัติ\nหลักสูตรนานาชาติ เศรษฐศาสตรบัณฑิต มช. — แผนวิชาการ (135 หน่วยกิต)')
+    : t.subtitle;
+  document.getElementById('txt-tip-title').textContent = t.tipTitle;
+  document.getElementById('txt-tip-body').textContent  = t.tipBody;
+  document.getElementById('txt-chip-none').textContent = t.chipNone;
+  document.getElementById('txt-chip-cur').textContent  = t.chipCur;
+  document.getElementById('txt-chip-done').textContent = t.chipDone;
+  document.getElementById('txt-year-label').textContent = t.yearLabel;
+  document.getElementById('txt-btn-gen').textContent   = t.btnGen;
+  document.getElementById('txt-btn-back').textContent  = t.btnBack;
+  document.getElementById('txt-support-title').textContent = t.supportTitle;
+  document.getElementById('txt-support-body').textContent  = t.supportBody;
+  const sel = document.getElementById('sel-ys');
+  const cur = sel.value;
+  sel.innerHTML = t.yearOpts.map((o,i)=>`<option value="${['1-1','1-2','2-1','2-2','3-1','3-2','4-1','4-2'][i]}">${o}</option>`).join('');
+  if (cur) sel.value = cur;
+}
 
 // ══════════════════════════════════════════
 // BUILD FORM
 // ══════════════════════════════════════════
 function buildForm() {
+  const t = T[lang];
   let h = '';
-  SECTIONS.forEach(sec => {
-    const allCourses = sec.groups.flatMap(g => g.courses);
+  getActiveSections().forEach(sec => {
+    const secLabel = lang==='en' ? sec.labelEn : sec.label;
     h += `<div class="acc-section">
       <div class="acc-header" onclick="toggleAcc('${sec.id}')">
-        <span>${sec.label}</span>
+        <span>${secLabel}</span>
         <div class="acc-right">
           <span class="acc-cr-badge" id="badge-${sec.id}">0 / ${sec.req} cr</span>
           <span id="arr-${sec.id}" style="color:#a0aec0;font-size:12px;transition:transform .2s">▶</span>
         </div>
       </div>
       <div class="acc-body" id="acc-${sec.id}">`;
-
     sec.groups.forEach((g, gi) => {
+      const gLabel = lang==='en' ? g.labelEn : g.label;
       if (g.pick) {
-        // ── Pick group (highlighted box) ──
         const pickId = `pick-${sec.id}-${gi}`;
+        const sel = g.courses.filter(c=>ST[c.code]?.s&&ST[c.code].s!=='none').length;
         h += `<div style="padding:10px 12px 4px">
-          <div class="grp-pick" id="${pickId}-wrap">
+          <div class="grp-pick">
             <div class="grp-pick-hdr">
-              <span class="grp-pick-title">🔵 ${g.label}</span>
-              <span class="pick-cnt ng" id="${pickId}-cnt">เลือกแล้ว 0 / ${g.pick}</span>
+              <span class="grp-pick-title">🔵 ${gLabel}</span>
+              <span class="pick-cnt ${sel>=g.pick?'ok':'ng'}" id="${pickId}-cnt">${t.pickLabel(sel,g.pick)}</span>
             </div>
-            <div class="tbl-head"><span>รหัส</span><span>ชื่อวิชา</span><span>cr</span><span style="text-align:right">สถานะ</span></div>`;
+            <div class="tbl-head"><span>${t.colCode}</span><span>${t.colName}</span><span>${t.colCr}</span><span style="text-align:right">${t.colStatus}</span></div>`;
         g.courses.forEach(c => { h += courseRow(c, sec.id, pickId); });
         h += `</div></div>`;
       } else {
-        // ── Required group ──
-        h += `<div class="grp-req-hdr"><span class="lbl">📌 ${g.label}</span><span class="tag-req">บังคับ</span></div>
-          <div class="tbl-head"><span>รหัส</span><span>ชื่อวิชา</span><span>cr</span><span style="text-align:right">สถานะ</span></div>`;
+        h += `<div class="grp-req-hdr"><span class="lbl">📌 ${gLabel}</span><span class="tag-req">${t.tagReq}</span></div>
+          <div class="tbl-head"><span>${t.colCode}</span><span>${t.colName}</span><span>${t.colCr}</span><span style="text-align:right">${t.colStatus}</span></div>`;
         g.courses.forEach(c => { h += courseRow(c, sec.id, null); });
       }
     });
-
     h += `</div></div>`;
   });
 
-  // วิชาโท
-  h += customSection('minor','7. วิชาโท (≥15 cr) — เพิ่มเองได้เลย');
-  // เลือกเสรี
-  h += customSection('free','8. วิชาเลือกเสรี (≥6 cr) — เพิ่มเองได้เลย');
+  const minorLabel = lang==='en' ? '7. Minor (≥15 cr) — add manually' : '7. วิชาโท (≥15 cr) — เพิ่มเองได้เลย';
+  const freeLabel  = lang==='en' ? '8. Free Elective (≥6 cr) — add manually' : '8. วิชาเลือกเสรี (≥6 cr) — เพิ่มเองได้เลย';
+  h += customSection('minor', minorLabel);
+  h += customSection('free',  freeLabel);
 
   document.getElementById('form-sections').innerHTML = h;
+  Object.keys(ST).forEach(code => {
+    const s = ST[code]?.s;
+    if (!s || s==='none') return;
+    const btn = document.getElementById('sb-'+code);
+    if (btn) { btn.className='s-btn '+s; btn.textContent = s==='current'?t.sCur:t.sDone; }
+    const gi = document.getElementById('gi-'+code);
+    if (gi) gi.style.display = s==='done'?'inline':'none';
+  });
 }
 
 function courseRow(c, secId, pickId) {
+  const t = T[lang];
+  const s = ST[c.code]?.s||'none';
+  const g = ST[c.code]?.g||'';
+  const label = s==='none'?t.sNone:s==='current'?t.sCur:t.sDone;
   return `<div class="c-row">
     <span class="td-code">${c.code}</span>
     <span class="td-name">${c.name}</span>
     <span class="td-cr">${c.cr}</span>
     <span class="td-act">
-      <button class="s-btn none" id="sb-${c.code}"
-        onclick="cycleStatus('${c.code}',${c.cr},'${secId}','${pickId||''}')">ยังไม่เรียน</button>
-      <input type="text" class="g-input" id="gi-${c.code}" placeholder="เกรด"
-        style="display:none" oninput="ST['${c.code}'].g=this.value">
+      <button class="s-btn ${s}" id="sb-${c.code}"
+        onclick="cycleStatus('${c.code}',${c.cr},'${secId}','${pickId||''}')">${label}</button>
+      <input type="text" class="g-input" id="gi-${c.code}" placeholder="${t.grade}"
+        style="display:${s==='done'?'inline':'none'}" value="${g}" oninput="ST['${c.code}'].g=this.value">
     </span>
   </div>`;
 }
 
 function customSection(type, label) {
+  const t = T[lang];
   return `<div class="acc-section">
     <div class="acc-header" onclick="toggleAcc('${type}')">
       <span>${label}</span>
@@ -443,89 +675,80 @@ function customSection(type, label) {
     </div>
     <div class="acc-body" id="acc-${type}">
       <div class="custom-add">
-        <input type="text" id="${type}-code" placeholder="รหัสวิชา เช่น 707201" maxlength="10">
-        <input type="text" id="${type}-name" placeholder="ชื่อวิชา" style="flex:2">
-        <input type="number" id="${type}-cr" placeholder="cr" style="width:48px" value="3" min="1" max="9">
-        <button class="btn-add" onclick="addCustom('${type}')">+ เพิ่ม</button>
+        <input type="text" id="${type}-code" placeholder="${t.customCode}" maxlength="10">
+        <input type="text" id="${type}-name" placeholder="${t.customName}" style="flex:2">
+        <input type="number" id="${type}-cr" placeholder="${t.customCr}" style="width:48px" value="3" min="1" max="9">
+        <button class="btn-add" onclick="addCustom('${type}')">${t.btnAdd}</button>
       </div>
       <div class="custom-list" id="list-${type}">
-        <p style="font-size:12.5px;color:#a0aec0;padding:8px 4px">ยังไม่ได้เพิ่มวิชา — กรอกช่องด้านบนแล้วกด + เพิ่ม</p>
+        <p style="font-size:12.5px;color:#a0aec0;padding:8px 4px">${t.noCustom}</p>
       </div>
     </div>
   </div>`;
 }
 
 // ══════════════════════════════════════════
-// STATE
+// CYCLE STATUS
 // ══════════════════════════════════════════
 function cycleStatus(code, cr, secId, pickId) {
-  if (!ST[code]) ST[code] = {s:'none',g:''};
-  ST[code].s = ST[code].s==='none' ? 'current' : ST[code].s==='current' ? 'done' : 'none';
-  const s = ST[code].s;
-  const btn = document.getElementById('sb-'+code);
-  const gi  = document.getElementById('gi-'+code);
-  btn.className = 's-btn '+s;
-  btn.textContent = s==='none' ? 'ยังไม่เรียน' : s==='current' ? 'กำลังเรียน 🟣' : 'ผ่านแล้ว ✅';
-  gi.style.display = s==='done' ? 'inline' : 'none';
+  if (!ST[code]) ST[code]={s:'none',g:''};
+  ST[code].s = ST[code].s==='none'?'current':ST[code].s==='current'?'done':'none';
+  const s=ST[code].s, t=T[lang];
+  const btn=document.getElementById('sb-'+code), gi=document.getElementById('gi-'+code);
+  btn.className='s-btn '+s;
+  btn.textContent = s==='none'?t.sNone:s==='current'?t.sCur:t.sDone;
+  gi.style.display = s==='done'?'inline':'none';
   refreshBadge(secId);
-  if (pickId) refreshPickCounter(pickId);
+  if(pickId) refreshPickCounter(pickId);
 }
 
 function refreshBadge(secId) {
-  const sec = SECTIONS.find(x=>x.id===secId);
-  if (!sec) return;
-  const all = sec.groups.flatMap(g=>g.courses);
-  const done = all.filter(c=>ST[c.code]?.s==='done').reduce((a,c)=>a+c.cr,0);
-  const cur  = all.filter(c=>ST[c.code]?.s==='current').reduce((a,c)=>a+c.cr,0);
-  const b = document.getElementById('badge-'+secId);
-  if (b) b.textContent = (done||cur) ? `${done}cr ✅${cur?' +'+cur+'cr 🟣':''}` : `0 / ${sec.req} cr`;
+  const sec=getActiveSections().find(x=>x.id===secId); if(!sec) return;
+  const all=sec.groups.flatMap(g=>g.courses);
+  const done=all.filter(c=>ST[c.code]?.s==='done').reduce((a,c)=>a+c.cr,0);
+  const cur =all.filter(c=>ST[c.code]?.s==='current').reduce((a,c)=>a+c.cr,0);
+  const b=document.getElementById('badge-'+secId);
+  if(b) b.textContent=(done||cur)?`${done}cr ✅${cur?' +'+cur+'cr 🟣':''}`:`0 / ${sec.req} cr`;
 }
 
 function refreshPickCounter(pickId) {
-  // pickId = "pick-{secId}-{gi}"
-  const parts = pickId.split('-');
-  const secId = parts[1];
-  const gi    = parseInt(parts[2]);
-  const sec = SECTIONS.find(x=>x.id===secId);
-  if (!sec) return;
-  const grp = sec.groups[gi];
-  if (!grp || !grp.pick) return;
-  const sel = grp.courses.filter(c=>ST[c.code]?.s && ST[c.code].s!=='none').length;
-  const el = document.getElementById(pickId+'-cnt');
-  if (!el) return;
-  el.textContent = `เลือกแล้ว ${sel} / ${grp.pick}`;
-  el.className = 'pick-cnt ' + (sel >= grp.pick ? 'ok' : 'ng');
+  const parts=pickId.split('-'), secId=parts[1], gi=parseInt(parts[2]);
+  const sec=getActiveSections().find(x=>x.id===secId); if(!sec) return;
+  const grp=sec.groups[gi]; if(!grp?.pick) return;
+  const sel=grp.courses.filter(c=>ST[c.code]?.s&&ST[c.code].s!=='none').length;
+  const el=document.getElementById(pickId+'-cnt'); if(!el) return;
+  el.textContent=T[lang].pickLabel(sel,grp.pick);
+  el.className='pick-cnt '+(sel>=grp.pick?'ok':'ng');
 }
 
 function toggleAcc(id) {
-  const body = document.getElementById('acc-'+id);
-  const arr  = document.getElementById('arr-'+id);
-  const open = body.classList.toggle('open');
-  if (arr) arr.style.transform = open ? 'rotate(90deg)' : '';
+  const body=document.getElementById('acc-'+id), arr=document.getElementById('arr-'+id);
+  const open=body.classList.toggle('open');
+  if(arr) arr.style.transform=open?'rotate(90deg)':'';
 }
 
-// Custom courses
 function addCustom(type) {
-  const code = document.getElementById(type+'-code').value.trim();
-  const name = document.getElementById(type+'-name').value.trim();
-  const cr   = parseInt(document.getElementById(type+'-cr').value)||3;
-  if (!code && !name) return;
-  const arr = type==='minor' ? customMinor : customFree;
-  arr.push({code:code||'???', name:name||'ไม่ระบุ', cr, s:'done'});
+  const t=T[lang];
+  const code=document.getElementById(type+'-code').value.trim();
+  const name=document.getElementById(type+'-name').value.trim();
+  const cr=parseInt(document.getElementById(type+'-cr').value)||3;
+  if(!code&&!name) return;
+  const arr=type==='minor'?customMinor:customFree;
+  arr.push({code:code||'???',name:name||'—',cr,s:'done'});
   document.getElementById(type+'-code').value='';
   document.getElementById(type+'-name').value='';
   renderCustom(type);
 }
-function removeCustom(type,i){ (type==='minor'?customMinor:customFree).splice(i,1); renderCustom(type); }
-function cycleCustom(type,i){ const arr=type==='minor'?customMinor:customFree; arr[i].s=arr[i].s==='current'?'done':'current'; renderCustom(type); }
+function removeCustom(type,i){(type==='minor'?customMinor:customFree).splice(i,1);renderCustom(type);}
+function cycleCustom(type,i){const arr=type==='minor'?customMinor:customFree;arr[i].s=arr[i].s==='current'?'done':'current';renderCustom(type);}
 function renderCustom(type) {
-  const arr = type==='minor'?customMinor:customFree;
-  const list = document.getElementById('list-'+type);
-  if (arr.length===0) { list.innerHTML='<p style="font-size:12.5px;color:#a0aec0;padding:8px 4px">ยังไม่ได้เพิ่มวิชา</p>'; return; }
-  list.innerHTML = arr.map((c,i)=>`
+  const t=T[lang], arr=type==='minor'?customMinor:customFree;
+  const list=document.getElementById('list-'+type); if(!list) return;
+  if(!arr.length){list.innerHTML=`<p style="font-size:12.5px;color:#a0aec0;padding:8px 4px">${t.noCustom}</p>`;return;}
+  list.innerHTML=arr.map((c,i)=>`
     <div class="custom-item">
       <button class="s-btn ${c.s}" onclick="cycleCustom('${type}',${i})" style="font-size:11.5px;padding:3px 9px">
-        ${c.s==='current'?'กำลังเรียน 🟣':'ผ่านแล้ว ✅'}
+        ${c.s==='current'?t.sCur:t.sDone}
       </button>
       <span style="font-weight:700;font-size:12.5px;min-width:54px">${c.code}</span>
       <span style="flex:1;font-size:12.5px">${c.name}</span>
@@ -533,7 +756,7 @@ function renderCustom(type) {
       <button class="btn-remove" onclick="removeCustom('${type}',${i})">×</button>
     </div>`).join('');
   const done=arr.filter(c=>c.s==='done').reduce((a,c)=>a+c.cr,0);
-  const cur =arr.filter(c=>c.s==='current').reduce((a,c)=>a+c.cr,0);
+  const cur=arr.filter(c=>c.s==='current').reduce((a,c)=>a+c.cr,0);
   const b=document.getElementById('badge-'+type);
   if(b) b.textContent=(done||cur)?`${done}cr ✅${cur?' +'+cur+'cr 🟣':''}`:'0 cr';
 }
@@ -542,31 +765,43 @@ function renderCustom(type) {
 // GENERATE RESULT
 // ══════════════════════════════════════════
 function generateResult() {
-  const [yr,sem] = document.getElementById('sel-ys').value.split('-');
+  const [yr,sem]=document.getElementById('sel-ys').value.split('-');
+  const t=T[lang];
+  const activeSec=getActiveSections();
+  const isIntl=prog==='intl';
 
-  function sumSec(secId,s){ return SECTIONS.find(x=>x.id===secId).groups.flatMap(g=>g.courses).filter(c=>ST[c.code]?.s===s).reduce((a,c)=>a+c.cr,0); }
+  function sumSec(id,s){
+    const sec=activeSec.find(x=>x.id===id); if(!sec) return 0;
+    return sec.groups.flatMap(g=>g.courses).filter(c=>ST[c.code]?.s===s).reduce((a,c)=>a+c.cr,0);
+  }
 
-  const geDone=sumSec('ge','done'), geCur=sumSec('ge','current');
+  const geDone=sumSec('ge','done'),geCur=sumSec('ge','current');
   const crqDone=sumSec('core_req','done');
-  const celDone=sumSec('core_elec','done'), celCur=sumSec('core_elec','current');
-  const mrqDone=sumSec('major_req','done'), mrqCur=sumSec('major_req','current');
+  const celDone=sumSec('core_elec','done'),celCur=sumSec('core_elec','current');
+  const mrqDone=sumSec('major_req','done'),mrqCur=sumSec('major_req','current');
   const melDone=sumSec('major_elec','done'),melCur=sumSec('major_elec','current');
-  const coopDone=sumSec('coop','done'), coopCur=sumSec('coop','current');
+  const coopDone=sumSec('coop','done'),coopCur=sumSec('coop','current');
   const minDone=customMinor.filter(c=>c.s==='done').reduce((a,c)=>a+c.cr,0);
-  const minCur =customMinor.filter(c=>c.s==='current').reduce((a,c)=>a+c.cr,0);
+  const minCur=customMinor.filter(c=>c.s==='current').reduce((a,c)=>a+c.cr,0);
   const freDone=customFree.filter(c=>c.s==='done').reduce((a,c)=>a+c.cr,0);
-  const freCur =customFree.filter(c=>c.s==='current').reduce((a,c)=>a+c.cr,0);
+  const freCur=customFree.filter(c=>c.s==='current').reduce((a,c)=>a+c.cr,0);
+
+  const coreTotal=isIntl?33:30;
+  const majReqCr=isIntl?45:42;
+  const ceReq=isIntl?21:12;
+  const ce4done=isIntl?melDone:coopDone+melDone;
+  const ce4cur=isIntl?melCur:coopCur+melCur;
+
   const totalDone=geDone+crqDone+celDone+mrqDone+melDone+coopDone+minDone+freDone;
   const pct=Math.min(100,Math.round(totalDone/135*100));
 
   function chip(c){
-    const s=ST[c.code]?.s||'none', g=ST[c.code]?.g||'';
+    const s=ST[c.code]?.s||'none',g=ST[c.code]?.g||'';
     const cls=s==='done'?'done':s==='current'?'current':'opt';
     const ico=s==='done'?'✅':s==='current'?'🟣':'';
     return `<span class="course-chip ${cls}">${c.code} ${c.name}${ico?' '+ico:''}${g?' <span class="grade-tag">'+g+'</span>':''}</span>`;
   }
-  function secChips(id){ return SECTIONS.find(x=>x.id===id).groups.flatMap(g=>g.courses).map(chip).join(''); }
-
+  function secChips(id){const sec=activeSec.find(x=>x.id===id);if(!sec)return '';return sec.groups.flatMap(g=>g.courses).map(chip).join('');}
   function node(id,label,badge,cls,inner,open=''){
     return `<li><span class="node-label section" onclick="tn('${id}')">
       <span class="toggle-icon" id="ni-${id}">${open?'▼':'▶'}</span>${label}
@@ -578,66 +813,88 @@ function generateResult() {
       <span class="toggle-icon" id="ni-${id}">▶</span>${label}</span>
       <div class="collapsible" id="nd-${id}">${inner}</div></li>`;
   }
-  function cr2(d,c,r){ return `${d}${c?`<span style="color:#553c9a"> +${c}🟣</span>`:''} / ${r}`; }
+  function cr2(d,c,r){return `${d}${c?`<span style="color:#553c9a"> +${c}🟣</span>`:''} / ${r}`;}
 
-  const geS  =geDone>=30?'done':geDone>0?'warn':'miss';
-  const coreS=(crqDone+celDone)>=30?'done':(crqDone+celDone)>0?'warn':'miss';
-  const majS =mrqDone>=42?'done':mrqDone>0?'warn':'miss';
-  const ceS  =(coopDone+melDone)>=12?'done':(coopDone+melDone)>0?'warn':'miss';
-  const minS =minDone>=15?'done':minDone>0?'warn':'miss';
-  const freS =freDone>=6?'done':freDone>0?'warn':'miss';
+  const geS=geDone>=30?'done':geDone>0?'warn':'miss';
+  const coreS=(crqDone+celDone)>=coreTotal?'done':(crqDone+celDone)>0?'warn':'miss';
+  const majS=mrqDone>=majReqCr?'done':mrqDone>0?'warn':'miss';
+  const ceS=ce4done>=ceReq?'done':ce4done>0?'warn':'miss';
+  const minS=minDone>=15?'done':minDone>0?'warn':'miss';
+  const freS=freDone>=6?'done':freDone>0?'warn':'miss';
 
-  const ge1=['001101','001102','001201','001228','261111','204100','953111','176104','851100','888102'];
-  const ge2=['703103','201114','063101','851103'];
-  const ge3=['140104','057139','154104','951100'];
-  function geChips(codes){ return SECTIONS[0].groups.flatMap(g=>g.courses).filter(c=>codes.includes(c.code)).map(chip).join(''); }
+  const ge1=isIntl
+    ?['001101','001102','001201','001228','204100','261111','953111','359206','888102']
+    :['001101','001102','001201','001228','261111','204100','953111','176104','851100','888102'];
+  const ge2=isIntl?['703103']:['703103','201114','063101','851103'];
+  const ge3=isIntl?['140104','154104','159151','951100']:['140104','057139','154104','951100'];
+  function geChips(codes){return activeSec[0].groups.flatMap(g=>g.courses).filter(c=>codes.includes(c.code)).map(chip).join('');}
 
-  const coopAll=SECTIONS.find(x=>x.id==='coop').groups.flatMap(g=>g.courses);
-  const melAll =SECTIONS.find(x=>x.id==='major_elec').groups.flatMap(g=>g.courses);
-  const coopElecInner=`<div class="course-list">
-    <p style="font-size:12px;color:#718096;margin-bottom:4px">สหกิจศึกษา (บังคับ 6 cr)</p>
-    ${coopAll.map(chip).join('')}
-    <p style="font-size:12px;color:#718096;margin:6px 0 4px">วิชาเอกเลือก ≥6 cr</p>
-    ${melAll.map(chip).join('')}</div>`;
+  const melAll=activeSec.find(x=>x.id==='major_elec').groups.flatMap(g=>g.courses);
+  let node4Inner;
+  if(isIntl){
+    const electLbl=lang==='en'?`Major Elective ≥${ceReq} cr`:`วิชาเอกเลือก ≥${ceReq} หน่วยกิต`;
+    const dblNote=lang==='en'
+      ?'<p style="font-size:11.5px;color:#718096;padding:4px 10px 8px;font-style:italic">⚠ 751325, 751419, 751447 enrolled as Core Elective cannot also be counted here.</p>'
+      :'<p style="font-size:11.5px;color:#718096;padding:4px 10px 8px;font-style:italic">⚠ 751325, 751419, 751447 ที่ลงทะเบียนเป็นวิชาแกนเลือกแล้ว ไม่สามารถนับซ้ำที่นี่ได้</p>';
+    node4Inner=`<div class="course-list">
+      <p style="font-size:12px;color:#718096;margin-bottom:4px">${electLbl}</p>
+      ${melAll.map(chip).join('')}${dblNote}</div>`;
+  } else {
+    const coopAll=activeSec.find(x=>x.id==='coop').groups.flatMap(g=>g.courses);
+    node4Inner=`<div class="course-list">
+      <p style="font-size:12px;color:#718096;margin-bottom:4px">${t.coopLabel}</p>
+      ${coopAll.map(chip).join('')}
+      <p style="font-size:12px;color:#718096;margin:6px 0 4px">${t.electLabel}</p>
+      ${melAll.map(chip).join('')}</div>`;
+  }
 
-  const minorInner=customMinor.length?`<div class="course-list">${customMinor.map(c=>`<span class="course-chip ${c.s==='done'?'done':'current'}">${c.code} ${c.name} ${c.s==='done'?'✅':'🟣'}</span>`).join('')}</div>`
-    :`<div class="course-list"><p class="note">📌 ยังไม่ได้เพิ่มวิชาโท</p></div>`;
-  const freeInner=customFree.length?`<div class="course-list">${customFree.map(c=>`<span class="course-chip ${c.s==='done'?'done':'current'}">${c.code} ${c.name} ${c.s==='done'?'✅':'🟣'}</span>`).join('')}</div>`
-    :`<div class="course-list"><p class="note">📌 ยังไม่ได้เพิ่มวิชาเลือกเสรี</p></div>`;
+  const minorInner=customMinor.length?`<div class="course-list">${customMinor.map(c=>`<span class="course-chip ${c.s==='done'?'done':'current'}">${c.code} ${c.name} ${c.s==='done'?'✅':'🟣'}</span>`).join('')}</div>`:`<div class="course-list"><p class="note">${t.noMinor}</p></div>`;
+  const freeInner=customFree.length?`<div class="course-list">${customFree.map(c=>`<span class="course-chip ${c.s==='done'?'done':'current'}">${c.code} ${c.name} ${c.s==='done'?'✅':'🟣'}</span>`).join('')}</div>`:`<div class="course-list"><p class="note">${t.noFree}</p></div>`;
 
+  const sb=t.subGe, sc=t.subCore;
+  const nl0=lang==='en'?'1. General Education (GE)':'1. หมวด GE';
+  const nl1=lang==='en'?'2. Core Courses':'2. วิชาแกน';
+  const nl2=lang==='en'?`3. Major Required (${majReqCr} cr)`:`3. วิชาเอกบังคับ (${majReqCr} cr)`;
+  const nl3=isIntl
+    ?(lang==='en'?`4. Major Elective (≥${ceReq} cr)`:`4. วิชาเอกเลือก (≥${ceReq} cr)`)
+    :(lang==='en'?'4. Coop + Major Elective':'4. สหกิจ + วิชาเอกเลือก');
+  const nl4=lang==='en'?'5. Minor (15 cr)':'5. วิชาโท (15 cr)';
+  const nl5=lang==='en'?'6. Free Elective (6 cr)':'6. วิชาเลือกเสรี (6 cr)';
+
+  const cardLabels=isIntl
+    ?(lang==='en'?['GE','Core','Major Req.','Major Elec.','Minor','Free Elec.']:['GE','วิชาแกน','วิชาเอกบังคับ','วิชาเอกเลือก','วิชาโท','เลือกเสรี'])
+    :t.cards;
+  const cardData=[{s:geS,d:geDone,r:30},{s:coreS,d:crqDone+celDone,r:coreTotal},{s:majS,d:mrqDone,r:majReqCr},{s:ceS,d:ce4done,r:ceReq},{s:minS,d:minDone,r:15},{s:freS,d:freDone,r:6}];
+
+  const subtitle=isIntl?t.resultSubIntl(yr,sem):t.resultSub(yr,sem);
   const html=`
-    <h1 class="t-title">🎓 แผนการเรียน — เศรษฐศาสตรบัณฑิต มช.</h1>
-    <p class="subtitle">แบบ 2 สหกิจศึกษา (≥135 หน่วยกิต) | ขึ้นปี ${yr} เทอม ${sem}</p>
+    <h1 class="t-title">🎓 ${t.resultTitle}</h1>
+    <p class="subtitle">${subtitle}</p>
     <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
-    <p style="font-size:13px;color:#718096;margin-bottom:12px">เรียนแล้ว ${totalDone} / 135 หน่วยกิต (${pct}%)</p>
+    <p style="font-size:13px;color:#718096;margin-bottom:12px">${t.crDone(totalDone,135)} (${pct}%)</p>
     <div class="legend">
-      <span>สัญลักษณ์:</span>
-      <span class="course-chip done" style="margin:0">✅ ผ่านแล้ว</span>
-      <span class="course-chip current" style="margin:0">🟣 กำลังเรียน</span>
-      <span class="course-chip opt" style="margin:0">— ยังไม่เรียน</span>
+      <span>${lang==='th'?'สัญลักษณ์:':'Legend:'}</span>
+      <span class="course-chip done" style="margin:0">${t.legPassed}</span>
+      <span class="course-chip current" style="margin:0">${t.legCur}</span>
+      <span class="course-chip opt" style="margin:0">${t.legNone}</span>
     </div>
     <div class="summary-grid">
-      <div class="card ${geS}"><div class="card-label">GE</div><div class="card-value">${geDone}/30</div></div>
-      <div class="card ${coreS}"><div class="card-label">วิชาแกน</div><div class="card-value">${crqDone+celDone}/30</div></div>
-      <div class="card ${majS}"><div class="card-label">วิชาเอกบังคับ</div><div class="card-value">${mrqDone}/42</div></div>
-      <div class="card ${ceS}"><div class="card-label">สหกิจ+เอกเลือก</div><div class="card-value">${coopDone+melDone}/12</div></div>
-      <div class="card ${minS}"><div class="card-label">วิชาโท</div><div class="card-value">${minDone}/15</div></div>
-      <div class="card ${freS}"><div class="card-label">เลือกเสรี</div><div class="card-value">${freDone}/6</div></div>
+      ${cardData.map((c,i)=>`<div class="card ${c.s}"><div class="card-label">${cardLabels[i]}</div><div class="card-value">${c.d}/${c.r}</div></div>`).join('')}
     </div>
     <ul class="tree">
-      ${node('ge','1. หมวด GE',cr2(geDone,geCur,30),geS,`<ul class="tree">
-        ${sub('ge1','กลุ่มบุคคลผู้มีความรู้',`<div class="course-list">${geChips(ge1)}</div>`)}
-        ${sub('ge2','กลุ่มผู้ร่วมสร้างสรรค์นวัตกรรม',`<div class="course-list">${geChips(ge2)}</div>`)}
-        ${sub('ge3','กลุ่มพลเมืองที่เข้มแข็ง',`<div class="course-list">${geChips(ge3)}</div>`)}
+      ${node('ge',nl0,cr2(geDone,geCur,30),geS,`<ul class="tree">
+        ${sub('ge1',sb[0],`<div class="course-list">${geChips(ge1)}</div>`)}
+        ${sub('ge2',sb[1],`<div class="course-list">${geChips(ge2)}</div>`)}
+        ${sub('ge3',sb[2],`<div class="course-list">${geChips(ge3)}</div>`)}
       </ul>`,'open')}
-      ${node('core','2. วิชาแกน',cr2(crqDone+celDone,celCur,30),coreS,`<ul class="tree">
-        ${sub('crq','วิชาแกนบังคับ',`<div class="course-list">${secChips('core_req')}</div>`)}
-        ${sub('cel','วิชาแกนเลือก',`<div class="course-list">${secChips('core_elec')}</div>`)}
+      ${node('core',nl1,cr2(crqDone+celDone,celCur,coreTotal),coreS,`<ul class="tree">
+        ${sub('crq',sc[0],`<div class="course-list">${secChips('core_req')}</div>`)}
+        ${sub('cel',sc[1],`<div class="course-list">${secChips('core_elec')}</div>`)}
       </ul>`)}
-      ${node('mrq','3. วิชาเอกบังคับ (42 cr)',cr2(mrqDone,mrqCur,42),majS,`<div class="course-list">${secChips('major_req')}</div>`)}
-      ${node('ce','4. สหกิจ + วิชาเอกเลือก',cr2(coopDone+melDone,coopCur+melCur,12),ceS,coopElecInner)}
-      ${node('min','5. วิชาโท (15 cr)',cr2(minDone,minCur,15),minS,minorInner)}
-      ${node('fre','6. วิชาเลือกเสรี (6 cr)',cr2(freDone,freCur,6),freS,freeInner)}
+      ${node('mrq',nl2,cr2(mrqDone,mrqCur,majReqCr),majS,`<div class="course-list">${secChips('major_req')}</div>`)}
+      ${node('ce',nl3,cr2(ce4done,ce4cur,ceReq),ceS,node4Inner)}
+      ${node('min',nl4,cr2(minDone,minCur,15),minS,minorInner)}
+      ${node('fre',nl5,cr2(freDone,freCur,6),freS,freeInner)}
     </ul>`;
 
   document.getElementById('result-content').innerHTML=html;
@@ -647,7 +904,7 @@ function generateResult() {
 }
 
 function tn(id){
-  const el=document.getElementById('nd-'+id), ic=document.getElementById('ni-'+id);
+  const el=document.getElementById('nd-'+id),ic=document.getElementById('ni-'+id);
   el.classList.toggle('open');
   if(ic) ic.textContent=el.classList.contains('open')?'▼':'▶';
 }
@@ -657,6 +914,8 @@ function goBack(){
   window.scrollTo(0,0);
 }
 
+// Init
+applyTranslations();
 buildForm();
 </script>
 </body>
