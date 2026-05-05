@@ -850,10 +850,19 @@ function generateResult() {
       <span class="badge ${cls}">${badge}</span></span>
       <div class="collapsible${open?' open':''}" id="nd-${id}">${inner}</div></li>`;
   }
-  function sub(id,label,inner){
+  function sub(id,label,inner,badge='',badgeCls='info'){
+    const bdg=badge?` <span class="badge ${badgeCls}">${badge}</span>`:'';
     return `<li><span class="node-label" onclick="tn('${id}')">
-      <span class="toggle-icon" id="ni-${id}">▶</span>${label}</span>
+      <span class="toggle-icon" id="ni-${id}">▶</span>${label}${bdg}</span>
       <div class="collapsible" id="nd-${id}">${inner}</div></li>`;
+  }
+  function _sb(d,c,r,useN=false){
+    const cls=d>=r?'done':d>0||c>0?'warn':'miss';
+    const lack=r-d;
+    const unit=useN?(lang==='th'?' วิชา':' courses'):(lang==='th'?' cr':' cr');
+    const curS=c?`<span style="color:#553c9a"> +${c}🟣</span>`:'';
+    const lackS=lack>0?` <span style="font-size:10px;color:#e53e3e;font-weight:700">(${lang==='th'?'ขาดอีก ':'need '}${lack}${unit})</span>`:'';
+    return {b:`${d}${curS} / ${r}${unit}${lackS}`,cls};
   }
   function cr2(d,c,r){
     const base=`${d}${c?`<span style="color:#553c9a"> +${c}🟣</span>`:''} / ${r}`;
@@ -878,6 +887,18 @@ function generateResult() {
   const ge2=isIntl?['703103']:['703103','201114','063101','851103'];
   const ge3=isIntl?['140104','154104','159151','951100']:['140104','057139','154104','951100'];
   function geChips(codes){return activeSec[0].groups.flatMap(g=>g.courses).filter(c=>codes.includes(c.code)).map(chip).join('');}
+
+  // sub-node badge calculations
+  const _geAll=activeSec[0].groups.flatMap(g=>g.courses);
+  function _geD(codes){return _geAll.filter(c=>codes.includes(c.code)&&ST[c.code]?.s==='done').reduce((a,c)=>a+c.cr,0);}
+  function _geC(codes){return _geAll.filter(c=>codes.includes(c.code)&&ST[c.code]?.s==='current').reduce((a,c)=>a+c.cr,0);}
+  const ge1b=_sb(_geD(ge1),_geC(ge1),18);
+  const ge2b=_sb(_geD(ge2),_geC(ge2),isIntl?3:6);
+  const ge3b=_sb(_geD(ge3),_geC(ge3),isIntl?9:6);
+  const _crqAll=activeSec.find(x=>x.id==='core_req').groups.flatMap(g=>g.courses);
+  const crqb=_sb(_crqAll.filter(c=>ST[c.code]?.s==='done').reduce((a,c)=>a+c.cr,0),_crqAll.filter(c=>ST[c.code]?.s==='current').reduce((a,c)=>a+c.cr,0),isIntl?18:15);
+  const _celAll2=activeSec.find(x=>x.id==='core_elec').groups.flatMap(g=>g.courses);
+  const celb=_sb(_celAll2.filter(c=>ST[c.code]?.s==='done').length,_celAll2.filter(c=>ST[c.code]?.s==='current').length,5,true);
 
   const melAll=activeSec.find(x=>x.id==='major_elec').groups.flatMap(g=>g.courses);
   let node4Inner;
@@ -933,13 +954,13 @@ function generateResult() {
     </div>
     <ul class="tree">
       ${node('ge',nl0,cr2(geDone,geCur,30),geS,`<ul class="tree">
-        ${sub('ge1',sb[0],`<div class="course-list">${geChips(ge1)}</div>`)}
-        ${sub('ge2',sb[1],`<div class="course-list">${geChips(ge2)}</div>`)}
-        ${sub('ge3',sb[2],`<div class="course-list">${geChips(ge3)}</div>`)}
+        ${sub('ge1',sb[0],`<div class="course-list">${geChips(ge1)}</div>`,ge1b.b,ge1b.cls)}
+        ${sub('ge2',sb[1],`<div class="course-list">${geChips(ge2)}</div>`,ge2b.b,ge2b.cls)}
+        ${sub('ge3',sb[2],`<div class="course-list">${geChips(ge3)}</div>`,ge3b.b,ge3b.cls)}
       </ul>`,'open')}
       ${node('core',nl1,cr2(crqDone+celDone,celCur,coreTotal),coreS,`<ul class="tree">
-        ${sub('crq',sc[0],`<div class="course-list">${secChips('core_req')}</div>`)}
-        ${sub('cel',sc[1],`<div class="course-list">${secChips('core_elec')}</div>`)}
+        ${sub('crq',sc[0],`<div class="course-list">${secChips('core_req')}</div>`,crqb.b,crqb.cls)}
+        ${sub('cel',sc[1],`<div class="course-list">${secChips('core_elec')}</div>`,celb.b,celb.cls)}
       </ul>`)}
       ${node('mrq',nl2,cr2(mrqDone,mrqCur,majReqCr),majS,`<div class="course-list">${secChips('major_req')}</div>`)}
       ${node('ce',nl3,cr2(ce4done,ce4cur,ceReq),ceS,node4Inner)}
