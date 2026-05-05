@@ -52,9 +52,11 @@
     .pick-cnt.ok{background:#c6f6d5;color:#22543d}
     .pick-cnt.ng{background:#fed7d7;color:#c53030}
     .tbl-head{display:grid;grid-template-columns:62px 1fr 38px 130px;gap:6px;padding:5px 12px;font-size:11px;color:#a0aec0;font-weight:600;letter-spacing:.03em;border-bottom:1px solid #f0f4f8;text-transform:uppercase}
-    .c-row{display:grid;grid-template-columns:62px 1fr 38px 130px;gap:6px;padding:6px 12px;align-items:center;transition:background .1s;border-bottom:1px solid #f7fafc}
+    .c-row{display:grid;grid-template-columns:62px 1fr 38px 130px;gap:6px;padding:6px 12px;align-items:center;transition:background .15s,border-left .15s;border-bottom:1px solid #f7fafc;border-left:3px solid transparent}
     .c-row:last-child{border-bottom:none}
     .c-row:hover{background:#f7fafc}
+    .c-row.current{background:#faf5ff;border-left-color:#b794f4}
+    .c-row.done{background:#f0fff4;border-left-color:#68d391}
     .grp-pick .c-row{border-bottom:1px solid #bee3f8}
     .grp-pick .c-row:last-child{border-bottom:none}
     .td-code{font-weight:700;font-size:12px;color:#4a5568}
@@ -691,7 +693,7 @@ function courseRow(c, secId, pickId) {
   const s = ST[c.code]?.s||'none';
   const g = ST[c.code]?.g||'';
   const label = s==='none'?t.sNone:s==='current'?t.sCur:t.sDone;
-  return `<div class="c-row">
+  return `<div class="c-row${s!=='none'?' '+s:''}" id="row-${c.code}">
     <span class="td-code">${c.code}</span>
     <span class="td-name">${c.name}</span>
     <span class="td-cr">${c.cr}</span>
@@ -739,6 +741,8 @@ function cycleStatus(code, cr, secId, pickId) {
   btn.className='s-btn '+s;
   btn.textContent = s==='none'?t.sNone:s==='current'?t.sCur:t.sDone;
   gi.style.display = s==='done'?'inline':'none';
+  const row=document.getElementById('row-'+code);
+  if(row) row.className='c-row'+(s!=='none'?' '+s:'');
   refreshBadge(secId);
   if(pickId) refreshPickCounter(pickId);
   if (document.getElementById('search-results-panel')?.style.display !== 'none') renderSearchPanel();
