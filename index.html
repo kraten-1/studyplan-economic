@@ -481,12 +481,8 @@ body{font-family:'Sarabun',sans-serif;color:#2d3748;min-height:100vh;overflow-x:
       </div>
 
       <div class="a-section" id="sec-slips">
-        <div class="tbl-wrap">
-          <div class="tbl-head-bar"><span>💳 สลิปที่ส่งมา</span></div>
-          <table class="atbl"><thead><tr>
-            <th>อีเมล</th><th>วันที่ส่ง</th><th>จำนวน</th><th>หมายเหตุ</th><th>สถานะ</th><th>การจัดการ</th>
-          </tr></thead><tbody id="slips-body"></tbody></table>
-        </div>
+        <div class="tbl-head-bar" style="background:#fff;border-radius:12px 12px 0 0;border:1px solid #f3e8ff;border-bottom:none"><span>💳 สลิปที่ส่งมา</span><span id="slip-cnt" style="font-size:12px;color:#94a3b8"></span></div>
+        <div id="slips-cards" style="display:flex;flex-direction:column;gap:14px;padding:4px 0 8px"></div>
       </div>
 
       <div class="a-section" id="sec-admins">
@@ -1247,19 +1243,35 @@ function renderAdmin(){
       ${isSA?`<button class="bsm de" onclick="deleteUser(${u.id})">ลบ</button>`:''}
     </td>
   </tr>`;}).join('');
-  document.getElementById('slips-body').innerHTML=SLIPS.map(s=>`<tr>
-    <td>${s.email}</td><td>${s.date}</td><td>${s.amount}฿</td><td>${s.note}</td>
-    <td><span class="br ${s.status==='approved'?'active':s.status}">${s.status==='approved'?'อนุมัติแล้ว':s.status==='pending'?'รอตรวจสอบ':'ปฏิเสธ'}</span></td>
-    <td style="display:flex;gap:5px;flex-wrap:wrap">
-      ${s.img?`<button class="bsm vi" onclick="viewSlipImg(${s.id})">🖼 ดูสลิป</button>`:''}
-      ${s.status==='pending'
-        ?`<button class="bsm ok" onclick="approveSlip(${s.id})">อนุมัติ</button>
-          <button class="bsm no" onclick="rejectSlip(${s.id})">ปฏิเสธ</button>`
-        :''}
-      ${isSA?`<button class="bsm ed" onclick="editSlip(${s.id})">แก้ไข</button>
-        <button class="bsm de" onclick="deleteSlip(${s.id})">ลบ</button>`:''}
-    </td>
-  </tr>`).join('');
+  const scEl=document.getElementById('slip-cnt');
+  if(scEl) scEl.textContent=`ทั้งหมด ${SLIPS.length} รายการ`;
+  document.getElementById('slips-cards').innerHTML=SLIPS.length===0
+    ?`<div style="text-align:center;padding:40px;color:#94a3b8;font-size:14px">ยังไม่มีสลิปที่ส่งมา</div>`
+    :SLIPS.map(s=>{
+    const statusCls=s.status==='approved'?'active':s.status;
+    const statusTxt=s.status==='approved'?'อนุมัติแล้ว':s.status==='pending'?'รอตรวจสอบ':'ปฏิเสธ';
+    const imgSrc=s.img_url||s.img;
+    return `<div style="background:#fff;border-radius:14px;padding:16px;box-shadow:0 2px 8px rgba(102,126,234,.1);border:1px solid #f3e8ff;display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap">
+      ${imgSrc?`<img src="${imgSrc}" onclick="viewSlipImg(${s.id})" style="width:110px;height:130px;object-fit:cover;border-radius:10px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15);flex-shrink:0" title="คลิกดูรูปเต็ม">`
+        :`<div style="width:110px;height:130px;border-radius:10px;background:#f3e8ff;display:flex;align-items:center;justify-content:center;color:#c4b5fd;font-size:28px;flex-shrink:0">📎</div>`}
+      <div style="flex:1;min-width:180px">
+        <div style="font-weight:700;font-size:14px;color:#1a365d;margin-bottom:2px">${s.name||s.email}</div>
+        <div style="font-size:12px;color:#718096;margin-bottom:8px">${s.email}</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <span style="font-size:12px;color:#4a5568">📅 ${s.date}</span>
+          <span style="font-size:12px;color:#4a5568">💰 ${s.amount}฿</span>
+          <span class="br ${statusCls}">${statusTxt}</span>
+        </div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          ${s.status==='pending'
+            ?`<button class="bsm ok" onclick="approveSlip(${s.id})">✅ อนุมัติ</button>
+              <button class="bsm no" onclick="rejectSlip(${s.id})">❌ ปฏิเสธ</button>`
+            :''}
+          ${isSA?`<button class="bsm de" onclick="deleteSlip(${s.id})">ลบ</button>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
   if(isSA) document.getElementById('admins-body').innerHTML=ADMINS.map(a=>`<tr>
     <td>${a.email}</td><td>${a.name}</td>
     <td><span class="br ${a.role}">${a.role}</span></td>
