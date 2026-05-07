@@ -543,13 +543,15 @@ body{font-family:'Sarabun',sans-serif;color:#2d3748;min-height:100vh;overflow-x:
       <img src="./promptpay-qr.jpg" alt="QR PromptPay" style="width:180px;height:auto;margin:8px auto;display:block;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.12)">
       <div class="pp-amt">ยอดชำระ: <strong>19 บาท / เดือน</strong></div>
     </div>
-    <label class="slip-zone" onclick="document.getElementById('slip-file').click()">
-      <input type="file" id="slip-file" accept="image/*" onchange="previewSlip(event)">
-      <div class="sz-ico">📎</div>
-      <div class="sz-txt" id="slip-txt">คลิกเพื่ออัพโหลดสลิปการโอน</div>
-      <img id="slip-img" class="hidden" alt="">
-    </label>
-    <button class="btn-pri" onclick="submitSlip()">ส่งสลิป</button>
+    <input type="file" id="slip-file" accept="image/*" onchange="previewSlip(event)" style="display:none">
+    <div id="slip-drop-zone" onclick="document.getElementById('slip-file').click()" style="border:2.5px dashed #c4b5fd;border-radius:16px;padding:24px 16px;text-align:center;cursor:pointer;margin-bottom:12px;transition:background .15s;background:#faf5ff">
+      <div style="font-size:32px;margin-bottom:8px">📤</div>
+      <div style="font-weight:700;font-size:15px;color:#553c9a;margin-bottom:4px" id="slip-txt">อัพโหลดสลิปการโอน</div>
+      <div style="font-size:12px;color:#94a3b8;margin-bottom:14px">คลิกที่นี่เพื่อเลือกรูปสลิป (JPG, PNG)</div>
+      <div style="display:inline-block;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border-radius:20px;padding:9px 28px;font-family:'Sarabun',sans-serif;font-size:14px;font-weight:700;box-shadow:0 2px 8px rgba(124,58,237,.3)">📎 เลือกไฟล์สลิป</div>
+      <img id="slip-img" class="hidden" alt="" style="width:100%;border-radius:10px;margin-top:12px;max-height:180px;object-fit:contain">
+    </div>
+    <button class="btn-pri" onclick="submitSlip()">✅ ส่งสลิป</button>
     <button class="btn-can" onclick="closeModal('m-payment')">ยกเลิก</button>
   </div>
 </div>
@@ -1105,7 +1107,9 @@ function previewSlip(e){
   r.onload=ev=>{
     const img=document.getElementById('slip-img');
     img.src=ev.target.result; img.classList.remove('hidden');
-    document.getElementById('slip-txt').textContent=f.name;
+    document.getElementById('slip-txt').textContent='✅ '+f.name;
+    const zone=document.getElementById('slip-drop-zone');
+    if(zone) zone.style.borderColor='#68d391';
   };
   r.readAsDataURL(f);
 }
