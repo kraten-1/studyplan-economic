@@ -19,8 +19,6 @@
     /* Back to hub */
     .hub-back{position:fixed;top:14px;left:14px;z-index:999;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:20px;padding:7px 16px;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(102,126,234,.4)}
     .hub-back:hover{opacity:.9}
-    .hub-pay{position:fixed;top:14px;left:140px;z-index:999;background:linear-gradient(135deg,#f472b6,#a855f7);color:#fff;border:none;border-radius:20px;padding:7px 16px;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(168,85,247,.35)}
-    .hub-pay:hover{opacity:.9}
     /* Save for grades button */
     .btn-save-grades{display:block;width:100%;max-width:400px;margin:12px auto 0;padding:13px;background:linear-gradient(135deg,#553c9a,#7c3aed);color:#fff;border:none;border-radius:12px;font-family:'Sarabun',sans-serif;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(124,58,237,.35)}
     .btn-save-grades:hover{opacity:.9}
@@ -166,7 +164,6 @@
 </div>
 
 <button class="hub-back" onclick="window.location.href='./'">← กลับหน้าหลัก</button>
-<button class="hub-pay" onclick="goPayment()">💳 สมัคร/จ่ายเงิน</button>
 
 <!-- SCREEN 1: SETUP -->
 <div id="screen-setup">
@@ -221,22 +218,6 @@
     <button class="btn-back" id="txt-btn-back" onclick="goBack()"></button>
     <div id="result-content"></div>
 
-    <!-- Grade calculator promo -->
-    <div style="background:linear-gradient(135deg,#553c9a,#7c3aed);border-radius:18px;padding:22px 24px;margin:20px 0;color:#fff;display:flex;align-items:center;gap:20px;flex-wrap:wrap">
-      <div style="flex:1;min-width:200px">
-        <div style="font-size:11px;font-weight:700;opacity:.75;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">🧮 Premium Feature</div>
-        <div style="font-size:20px;font-weight:700;margin-bottom:6px">โปรแกรมช่วยคิดเกรด</div>
-        <div style="font-size:13px;opacity:.85;line-height:1.7;margin-bottom:14px">กรอกคะแนนแต่ละองค์ประกอบ ระบบคำนวณเกรดให้เลย ดู GPA รวม วิเคราะห์ว่าควรดรอปหรือสู้ต่อ เพียง <strong>19฿/เดือน</strong></div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button onclick="saveForGrades()" style="background:#fff;color:#553c9a;border:none;border-radius:20px;padding:9px 20px;font-family:'Sarabun',sans-serif;font-size:14px;font-weight:700;cursor:pointer">📊 บันทึกวิชาแล้วไปคิดเกรด →</button>
-          <button onclick="document.getElementById('promo-qr').classList.toggle('hidden')" style="background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:20px;padding:9px 20px;font-family:'Sarabun',sans-serif;font-size:14px;font-weight:700;cursor:pointer">📱 สแกนจ่าย 19฿</button>
-        </div>
-      </div>
-      <div id="promo-qr" class="hidden" style="text-align:center;flex-shrink:0">
-        <img src="./promptpay-qr.jpg" alt="QR PromptPay" style="width:150px;height:auto;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.25)">
-        <div style="font-size:11px;opacity:.8;margin-top:6px">โอน 19฿ แล้วส่งสลิปที่เว็บ</div>
-      </div>
-    </div>
 
     <div class="support-box">
       <h3>💜 <span id="txt-support-title"></span></h3>
