@@ -59,7 +59,7 @@ body{font-family:'Sarabun',sans-serif;color:#2d3748;min-height:100vh;overflow-x:
   color:#1e1b4b;line-height:1.15;margin-bottom:22px;letter-spacing:-1px;text-align:center;
 }
 .hero-title span{
-  font-size:1.5em;display:block;
+  font-size:inherit;display:block;
   background:linear-gradient(90deg,#553c9a,#7c3aed,#a855f7);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
@@ -340,7 +340,7 @@ body{font-family:'Sarabun',sans-serif;color:#2d3748;min-height:100vh;overflow-x:
 
   <div class="hero-body">
     <div class="hero-tag" id="hero-tag-el">🎓 Economics · Study System</div>
-    <h1 class="hero-title" style="font-size:clamp(26px,6vw,64px);line-height:1.2">
+    <h1 class="hero-title" style="font-size:clamp(14px,2vw,17px);line-height:1.2">
       <span style="-webkit-text-fill-color:inherit;display:inline">Make Your Own </span><span style="display:inline">Future</span><span style="-webkit-text-fill-color:inherit;display:inline"> by yourself</span>
     </h1>
     <p class="hero-sub" id="hero-sub-el">วางแผนการเรียน คำนวณเกรด และเตรียมพร้อมสำหรับทุกก้าวของชีวิตนักศึกษา</p>
@@ -1289,6 +1289,27 @@ function renderAdmin(){
 function viewUser(id){
   const u=USERS.find(x=>x.id===id); if(!u) return;
   const isSA=S.adminUser?.role==='superadmin';
+  const userSlips=SLIPS.filter(s=>s.email===u.email);
+  const slipSection=userSlips.length>0?`
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid #f0f4f8">
+      <div style="font-size:12px;color:#718096;margin-bottom:8px">💳 สลิปที่ส่งมา (${userSlips.length})</div>
+      ${userSlips.map(s=>{
+        const sc=s.status==='approved'?'active':s.status;
+        const st=s.status==='approved'?'อนุมัติแล้ว':s.status==='pending'?'รอตรวจสอบ':'ปฏิเสธ';
+        return `<div style="background:#f7fafc;border-radius:8px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:#2d3748">${s.date} · ${s.amount}฿</div>
+            ${s.note?`<div style="font-size:11px;color:#94a3b8;margin-top:2px">${s.note}</div>`:''}
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            <span class="br ${sc}" style="font-size:11px">${st}</span>
+            ${s.img_url?`<button class="bsm vi" onclick="viewSlipImg(${s.id})">ดูสลิป 🖼</button>`:''}
+            ${isSA&&s.status==='pending'?`<button class="bsm ok" onclick="approveSlip(${s.id});closeModal('m-detail');renderAdmin()">✅ อนุมัติ</button>
+              <button class="bsm no" onclick="rejectSlip(${s.id});closeModal('m-detail');renderAdmin()">❌ ปฏิเสธ</button>`:''}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`:'';
   document.getElementById('detail-content').innerHTML=`
     <div style="background:#f7fafc;border-radius:10px;padding:13px;margin-bottom:12px">
       <div style="font-weight:700;font-size:15px">${u.name}</div>
@@ -1300,6 +1321,7 @@ function viewUser(id){
       <tr><td style="color:#718096;padding:4px 0">สถานะสมาชิก</td><td><span class="br ${u.sub}">${u.sub==='active'?'Active':u.sub==='pending'?'รอตรวจสอบ':'ไม่มี'}</span></td></tr>
       <tr><td style="color:#718096;padding:4px 0">GPA ล่าสุด</td><td style="font-weight:600">${u.gpa}</td></tr>
     </table>
+    ${slipSection}
     ${isSA?`<div style="margin-top:14px;padding-top:14px;border-top:1px solid #f0f4f8">
       <div style="font-size:12px;color:#718096;margin-bottom:8px">⚙ Superadmin Actions</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
