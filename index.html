@@ -1137,12 +1137,20 @@ async function submitSlip(){
   const sendBtn=document.querySelector('#m-payment .btn-pri');
   if(sendBtn){ sendBtn.textContent='⏳ กำลังส่ง...'; sendBtn.disabled=true; }
   try{
-    const ext=file.name.split('.').pop()||'jpg';
-    const fileName=`${Date.now()}_${(S.user?.email||'unknown').replace(/[@.]/g,'_')}.${ext}`;
-    const{error:upErr}=await sb.storage.from('Slips').upload(fileName,file,{contentType:file.type,upsert:true});
-    if(upErr) throw upErr;
-    const{data:urlData}=sb.storage.from('Slips').getPublicUrl(fileName);
-    const imgUrl=urlData.publicUrl;
+    const imgUrl=await new Promise((res,rej)=>{
+      const img=new Image();
+      img.onload=()=>{
+        const MAX=900;
+        const ratio=Math.min(1,MAX/Math.max(img.width,img.height));
+        const c=document.createElement('canvas');
+        c.width=Math.round(img.width*ratio);
+        c.height=Math.round(img.height*ratio);
+        c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+        res(c.toDataURL('image/jpeg',0.72));
+      };
+      img.onerror=rej;
+      img.src=URL.createObjectURL(file);
+    });
     const{error:insErr}=await sb.from('slips').insert({
       email:S.user?.email||'',name:S.user?.name||'',
       date:new Date().toISOString().slice(0,10),
