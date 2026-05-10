@@ -1207,6 +1207,16 @@ function viewSlipImg(id){
 }
 async function goAdmin(){
   if(S.adminUser){ await loadStoredSlips(); renderAdmin(); showScreen('s-admin'); return; }
+  const savedEmail=localStorage.getItem('hub_admin_session');
+  if(savedEmail){
+    const adm=ADMINS.find(a=>a.email===savedEmail);
+    if(adm){
+      S.adminUser=adm;
+      document.getElementById('role-lbl').textContent=`${adm.name} · ${adm.role}`;
+      document.getElementById('nav-admins').classList.toggle('hidden', adm.role!=='superadmin');
+      await loadStoredSlips(); renderAdmin(); showScreen('s-admin'); return;
+    }
+  }
   if(S.user && isAdmin()){
     const adm=ADMINS.find(a=>a.email===S.user.email);
     S.adminUser=adm||{...S.user,role:'admin'};
@@ -1224,11 +1234,12 @@ function adminLogin(){
   if(!adm||CREDS[email]!==pw){ err.style.display='block'; return; }
   err.style.display='none';
   S.adminUser=adm;
+  localStorage.setItem('hub_admin_session',email);
   document.getElementById('role-lbl').textContent=`${adm.name} · ${adm.role}`;
   document.getElementById('nav-admins').classList.toggle('hidden', adm.role!=='superadmin');
   loadStoredSlips().then(()=>{ renderAdmin(); showScreen('s-admin'); });
 }
-function adminLogout(){ S.adminUser=null; showScreen('s-admin-login'); }
+function adminLogout(){ S.adminUser=null; localStorage.removeItem('hub_admin_session'); showScreen('s-admin-login'); }
 function aNav(sec){
   document.querySelectorAll('.a-nav').forEach(n=>n.classList.remove('active'));
   document.querySelectorAll('.a-section').forEach(s=>s.classList.remove('active'));
