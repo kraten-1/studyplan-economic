@@ -343,7 +343,7 @@ body{font-family:'Sarabun',sans-serif;color:#2d3748;min-height:100vh;overflow-x:
     <h1 class="hero-title" style="font-size:clamp(14px,2vw,17px);line-height:1.2">
       <span style="-webkit-text-fill-color:inherit;display:inline">Make Your Own </span><span style="display:inline">Future</span><span style="-webkit-text-fill-color:inherit;display:inline"> by yourself</span>
     </h1>
-    <p class="hero-sub" id="hero-sub-el">วางแผนการเรียน คำนวณเกรด และเตรียมพร้อมสำหรับทุกก้าวของชีวิตนักศึกษา</p>
+    <p class="hero-sub" id="hero-sub-el">วางแผนการเรียน คำนวณเกรด<br>และเตรียมพร้อมสำหรับทุกก้าวของชีวิตนักศึกษา</p>
 
     <div class="notice-banner">
       <div class="nb-row" style="margin-bottom:10px">
@@ -767,7 +767,7 @@ const sb=supabase.createClient(SB_URL,SB_KEY);
 let curLang = localStorage.getItem('hub_lang') || 'th';
 const TRANS = {
   th: {
-    sub: 'วางแผนการเรียน คำนวณเกรด และเตรียมพร้อมสำหรับทุกก้าวของชีวิตนักศึกษา',
+    sub: 'วางแผนการเรียน คำนวณเกรด<br>และเตรียมพร้อมสำหรับทุกก้าวของชีวิตนักศึกษา',
     nbTitle: 'อย่าลืม <strong style="color:#7c3aed">เข้าสู่ระบบ</strong> ก่อนใช้งานนะ',
     nbSub: 'จะได้ไม่ต้องเสียเวลากรอกข้อมูลใหม่ทุกครั้งก่อนจะเข้าใช้งาน',
     nb2Title: 'โปรแกรมบันทึกคะแนนคำนวณเกรด',
@@ -779,7 +779,7 @@ const TRANS = {
     loginBtn: 'เข้าสู่ระบบ', logoutBtn: 'ออก', langNext: 'EN',
   },
   en: {
-    sub: 'Plan your studies, calculate grades, and prepare for every step of your student life.',
+    sub: 'Plan your studies, calculate grades,<br>and prepare for every step of your student life.',
     nbTitle: 'Don\'t forget to <strong style="color:#7c3aed">Sign In</strong> before using the system',
     nbSub: 'So you won\'t have to re-enter your information each time.',
     nb2Title: 'Grade Score Tracking & Calculator',
