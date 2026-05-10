@@ -464,6 +464,7 @@ body{font-family:'Sarabun',sans-serif;color:#2d3748;min-height:100vh;overflow-x:
       <div class="admin-nav">
         <div class="a-nav active" id="nav-users" onclick="aNav('users')">👥 ผู้ใช้ทั้งหมด</div>
         <div class="a-nav" id="nav-slips" onclick="aNav('slips')">💳 สลิปรอตรวจ</div>
+        <div class="a-nav" id="nav-premium" onclick="aNav('premium');loadPremiumUsers()">💎 ลูกค้า Premium</div>
         <div class="a-nav" id="nav-online" onclick="aNav('online');initOnlineSection()">🟢 ออนไลน์ตอนนี้</div>
         <div class="a-nav" id="nav-planner" onclick="aNav('planner');loadPlannerBackups()">📚 Backup แพลนเนอร์</div>
         <div class="a-nav hidden" id="nav-admins" onclick="aNav('admins')">🔑 จัดการ Admin</div>
@@ -493,6 +494,22 @@ body{font-family:'Sarabun',sans-serif;color:#2d3748;min-height:100vh;overflow-x:
       <div class="a-section" id="sec-slips">
         <div class="tbl-head-bar" style="background:#fff;border-radius:12px 12px 0 0;border:1px solid #f3e8ff;border-bottom:none"><span>💳 สลิปที่ส่งมา</span><span id="slip-cnt" style="font-size:12px;color:#94a3b8"></span></div>
         <div id="slips-cards" style="display:flex;flex-direction:column;gap:14px;padding:4px 0 8px"></div>
+      </div>
+
+      <div class="a-section" id="sec-premium">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+          <div>
+            <div style="font-weight:700;font-size:16px;color:#1a365d">💎 ลูกค้า Premium</div>
+            <div style="font-size:12px;color:#94a3b8;margin-top:2px">ผู้ใช้ที่สมัครสมาชิก Premium อยู่ในขณะนี้</div>
+          </div>
+          <button class="bsm vi" onclick="loadPremiumUsers()">🔄 รีเฟรช</button>
+        </div>
+        <div id="premium-stats" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px"></div>
+        <div class="tbl-wrap">
+          <table class="atbl"><thead><tr>
+            <th>อีเมล</th><th>ชื่อ</th><th>เข้าใช้ล่าสุด</th><th>วันหมดอายุ</th><th>วันที่เหลือ</th><th>สถานะ</th><th>การจัดการ</th>
+          </tr></thead><tbody id="premium-body"><tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:24px">กดรีเฟรชเพื่อโหลดข้อมูล</td></tr></tbody></table>
+        </div>
       </div>
 
       <div class="a-section" id="sec-online">
@@ -1491,6 +1508,96 @@ async function rejectSlip(id){
   renderAdmin();
 }
 function deleteSlip(id){ if(!confirm('ยืนยันลบสลิปนี้?')) return; SLIPS=SLIPS.filter(s=>s.id!==id); renderAdmin(); }
+// ══════════════════════════
+// PREMIUM CUSTOMERS
+// ══════════════════════════
+async function loadPremiumUsers(){
+  const tbody=document.getElementById('premium-body');
+  const statsEl=document.getElementById('premium-stats');
+  if(!tbody) return;
+  tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:24px">⏳ กำลังโหลด...</td></tr>`;
+  try{
+    const{data,error}=await sb.from('hub_users').select('*').eq('sub_status','active').order('last_login',{ascending:false});
+    if(error) throw error;
+    const rows=data||[];
+    const now=new Date();
+    const expiringSoon=rows.filter(r=>{
+      if(!r.sub_expiry) return false;
+      const d=Math.ceil((new Date(r.sub_expiry)-now)/(1000*60*60*24));
+      return d>=0&&d<=7;
+    });
+    const expired=rows.filter(r=>r.sub_expiry&&new Date(r.sub_expiry)<now);
+    if(statsEl) statsEl.innerHTML=`
+      <div style="background:#f0fff4;border:1px solid #9ae6b4;border-radius:10px;padding:12px 18px;text-align:center;min-width:110px">
+        <div style="font-size:22px;font-weight:800;color:#276749">${rows.length}</div>
+        <div style="font-size:11px;color:#48bb78;font-weight:600">Premium ทั้งหมด</div>
+      </div>
+      <div style="background:#fffbeb;border:1px solid #f6e05e;border-radius:10px;padding:12px 18px;text-align:center;min-width:110px">
+        <div style="font-size:22px;font-weight:800;color:#92400e">${expiringSoon.length}</div>
+        <div style="font-size:11px;color:#d97706;font-weight:600">ใกล้หมดอายุ (≤7 วัน)</div>
+      </div>
+      <div style="background:#fff5f5;border:1px solid #feb2b2;border-radius:10px;padding:12px 18px;text-align:center;min-width:110px">
+        <div style="font-size:22px;font-weight:800;color:#c53030">${expired.length}</div>
+        <div style="font-size:11px;color:#e53e3e;font-weight:600">หมดอายุแล้ว</div>
+      </div>`;
+    if(!rows.length){
+      tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:24px">ยังไม่มีลูกค้า Premium</td></tr>`;
+      return;
+    }
+    const isSA=S.adminUser?.role==='superadmin';
+    tbody.innerHTML=rows.map(r=>{
+      const daysLeft=r.sub_expiry?Math.ceil((new Date(r.sub_expiry)-now)/(1000*60*60*24)):null;
+      const expDate=r.sub_expiry?new Date(r.sub_expiry).toLocaleDateString('th-TH'):'ตลอดไป';
+      const lastLogin=r.last_login?new Date(r.last_login).toLocaleDateString('th-TH'):'—';
+      let daysBadge='—';
+      let statusHtml=`<span class="br active" style="font-size:11px">Active</span>`;
+      if(daysLeft!==null){
+        if(daysLeft<0){
+          daysBadge=`<span style="color:#e53e3e;font-weight:700">หมดอายุแล้ว</span>`;
+          statusHtml=`<span class="br" style="font-size:11px;background:#fee2e2;color:#991b1b">หมดอายุ</span>`;
+        } else if(daysLeft<=7){
+          daysBadge=`<span style="color:#d97706;font-weight:700">⚠️ ${daysLeft} วัน</span>`;
+        } else {
+          daysBadge=`<span style="color:#276749;font-weight:600">${daysLeft} วัน</span>`;
+        }
+      }
+      const emailKey=r.email.replace(/'/g,"\\'");
+      return `<tr>
+        <td style="font-size:13px;font-weight:600">${r.email}</td>
+        <td style="font-size:13px">${r.name||'—'}</td>
+        <td style="font-size:12px;color:#718096">${lastLogin}</td>
+        <td style="font-size:12px">${expDate}</td>
+        <td style="font-size:12px">${daysBadge}</td>
+        <td>${statusHtml}</td>
+        <td style="display:flex;gap:5px;flex-wrap:wrap">
+          ${isSA?`<button class="bsm ok" onclick="extendPremium('${emailKey}')">+30 วัน</button>`:''}
+          ${isSA?`<button class="bsm no" onclick="revokePremiumDirect('${emailKey}')">ยกเลิก</button>`:''}
+        </td>
+      </tr>`;
+    }).join('');
+  }catch(e){
+    console.error('loadPremiumUsers:',e);
+    tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;color:#e53e3e;padding:24px">เกิดข้อผิดพลาด: ${e.message}</td></tr>`;
+  }
+}
+async function extendPremium(email){
+  if(!confirm(`ต่ออายุ Premium ให้ ${email} อีก 30 วันใช่ไหม?`)) return;
+  try{
+    const{data}=await sb.from('hub_users').select('sub_expiry').eq('email',email).maybeSingle();
+    const base=data?.sub_expiry&&new Date(data.sub_expiry)>new Date()?new Date(data.sub_expiry):new Date();
+    base.setDate(base.getDate()+30);
+    await sb.from('hub_users').update({sub_expiry:base.toISOString().split('T')[0],sub_status:'active'}).eq('email',email);
+    loadPremiumUsers();
+  }catch(e){ alert('เกิดข้อผิดพลาด: '+e.message); }
+}
+async function revokePremiumDirect(email){
+  if(!confirm(`ยกเลิก Premium ของ ${email} ใช่ไหม?`)) return;
+  try{
+    await sb.from('hub_users').update({sub_status:'none',sub_expiry:null}).eq('email',email);
+    loadPremiumUsers();
+  }catch(e){ alert('เกิดข้อผิดพลาด: '+e.message); }
+}
+
 // ══════════════════════════
 // ONLINE USERS (REALTIME)
 // ══════════════════════════
