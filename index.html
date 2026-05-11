@@ -479,7 +479,7 @@ body{font-family:'Sarabun',sans-serif;color:#2d3748;min-height:100vh;overflow-x:
           <div class="stat-c"><div class="stat-n" id="st-rev">0</div><div class="stat-l">รายได้รวม (฿)</div></div>
         </div>
         <div class="tbl-wrap">
-          <div class="tbl-head-bar"><span>👥 รายชื่อผู้ใช้</span><span style="font-size:12px;color:#94a3b8" id="user-cnt"></span></div>
+          <div class="tbl-head-bar"><span>👥 รายชื่อผู้ใช้</span><div style="display:flex;align-items:center;gap:8px"><span style="font-size:12px;color:#94a3b8" id="user-cnt"></span><button class="bsm ad" onclick="exportUsersCSV()">💾 บันทึก</button></div></div>
           <table class="atbl"><thead><tr>
             <th>อีเมล</th><th>ชื่อ</th><th>วันที่สมัคร</th><th>สมาชิก</th><th>หมดอายุ</th><th>GPA ล่าสุด</th><th>การจัดการ</th>
           </tr></thead><tbody id="users-body"></tbody></table>
@@ -1565,6 +1565,12 @@ function viewUser(id){
   openModal('m-detail');
 }
 function deleteUser(id){ if(!confirm('ยืนยันลบผู้ใช้?')) return; USERS=USERS.filter(u=>u.id!==id); renderAdmin(); }
+function exportUsersCSV(){
+  const rows=[['อีเมล','ชื่อ','วันที่สมัคร','สมาชิก','หมดอายุ','GPA'],...USERS.map(u=>[u.email,u.name,u.join,u.sub==='active'?'Active':u.sub==='pending'?'รอตรวจสอบ':'ไม่มี',u.subExpiry||'—',u.gpa])];
+  const csv='﻿'+rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a'); a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download='users_'+new Date().toISOString().slice(0,10)+'.csv'; a.click();
+}
 async function approveSlip(id){
   const s=SLIPS.find(x=>x.id===id); if(!s) return;
   await sb.from('slips').update({status:'approved'}).eq('id',id);
@@ -1880,8 +1886,18 @@ async function confirmAddAdmin(){
     renderAdmin();
   }catch(err){ alert('เกิดข้อผิดพลาด: '+err.message); }
 }
-function activateSub(id){ const u=USERS.find(x=>x.id===id); if(u) u.sub='active'; }
-function revokeSub(id){ const u=USERS.find(x=>x.id===id); if(u) u.sub='none'; }
+async function activateSub(id){
+  const u=USERS.find(x=>x.id===id); if(!u) return;
+  u.sub='active';
+  const expiry=new Date(); expiry.setDate(expiry.getDate()+32);
+  u.subExpiry=expiry.toISOString().split('T')[0];
+  try{ await sb.from('hub_users').upsert({email:u.email,sub_status:'active',sub_expiry:u.subExpiry},{onConflict:'email'}); }catch(e){ console.error(e); }
+}
+async function revokeSub(id){
+  const u=USERS.find(x=>x.id===id); if(!u) return;
+  u.sub='none'; u.subExpiry=null;
+  try{ await sb.from('hub_users').update({sub_status:'none',sub_expiry:null}).eq('email',u.email); }catch(e){ console.error(e); }
+}
 
 function editUser(id){
   const u=USERS.find(x=>x.id===id); if(!u) return;
