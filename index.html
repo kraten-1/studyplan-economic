@@ -998,21 +998,8 @@ function onGlobalFChange(){
 // ══════════════════════════
 // MOCK DATA (ADMIN)
 // ══════════════════════════
-let USERS=[
-  {id:1,email:'natchaphon@cmu.ac.th', name:'ณัฐพล วงศ์ใหญ่', join:'2026-01-12',sub:'active', gpa:'3.45',lastLogin:'2026-05-04'},
-  {id:2,email:'praew.kt@cmu.ac.th',   name:'แพรว กิตติวงศ์',  join:'2026-02-03',sub:'pending',gpa:'—',  lastLogin:'2026-05-03'},
-  {id:3,email:'thanakorn.s@cmu.ac.th',name:'ธนกร สมใจ',       join:'2026-02-18',sub:'none',   gpa:'—',  lastLogin:'2026-04-28'},
-  {id:4,email:'mink.jtw@cmu.ac.th',   name:'มิ้งค์ จิตรวงศ์', join:'2026-03-01',sub:'active', gpa:'2.98',lastLogin:'2026-05-05'},
-  {id:5,email:'fern.nm@cmu.ac.th',    name:'เฟิร์น นุ่มมาก',  join:'2026-03-15',sub:'active', gpa:'3.71',lastLogin:'2026-05-04'},
-  {id:6,email:'beam.pp@cmu.ac.th',    name:'บีม ปรีดาพร',     join:'2026-04-10',sub:'pending',gpa:'—',  lastLogin:'2026-04-29'},
-];
-let SLIPS=[
-  {id:1,email:'praew.kt@cmu.ac.th',  date:'2026-05-03',amount:19,note:'โอนจาก KBank',  status:'pending'},
-  {id:2,email:'beam.pp@cmu.ac.th',   date:'2026-04-29',amount:19,note:'โอนจาก SCB',    status:'pending'},
-  {id:3,email:'natchaphon@cmu.ac.th',date:'2026-01-12',amount:19,note:'โอนจาก KBank',  status:'approved'},
-  {id:4,email:'mink.jtw@cmu.ac.th',  date:'2026-03-01',amount:19,note:'PromptPay',      status:'approved'},
-  {id:5,email:'fern.nm@cmu.ac.th',   date:'2026-03-15',amount:19,note:'โอนจาก KBank',  status:'approved'},
-];
+let USERS=[];
+let SLIPS=[];
 const SUPERADMIN={email:'kraten25ten@gmail.com', name:'Kraten (Owner)', role:'superadmin'};
 let ADMINS=[SUPERADMIN];
 let PLANNER_DATA=[];
@@ -1391,14 +1378,25 @@ async function submitSlip(){
 // ══════════════════════════
 async function loadStoredSlips(){
   try{
-    const{data,error}=await sb.from('slips').select('*').order('created_at',{ascending:false});
-    if(error) throw error;
+    const[slipsRes,usersRes]=await Promise.all([
+      sb.from('slips').select('*').order('created_at',{ascending:false}),
+      sb.from('hub_users').select('*').order('last_login',{ascending:false})
+    ]);
     SLIPS.length=0;
-    (data||[]).forEach(s=>{
+    (slipsRes.data||[]).forEach(s=>{
       SLIPS.push({id:s.id,email:s.email,name:s.name,date:s.date,amount:s.amount,note:s.note,status:s.status,img_url:s.img_url});
-      if(s.email&&!USERS.find(u=>u.email===s.email)){
-        USERS.push({id:s.id,email:s.email,name:s.name||s.email,join:s.date,sub:s.status==='approved'?'active':s.status==='pending'?'pending':'none',gpa:'—',lastLogin:s.date});
-      }
+    });
+    USERS.length=0;
+    let uid=1;
+    (usersRes.data||[]).forEach(u=>{
+      USERS.push({
+        id:uid++,email:u.email,name:u.name||u.email,
+        join:u.created_at?u.created_at.slice(0,10):(u.last_login?u.last_login.slice(0,10):'—'),
+        sub:u.sub_status==='active'?'active':u.sub_status==='pending'?'pending':'none',
+        subExpiry:u.sub_expiry||null,
+        gpa:u.gpa||'—',
+        lastLogin:u.last_login?u.last_login.slice(0,10):'—'
+      });
     });
   }catch(e){
     console.error('loadStoredSlips error:',e);
