@@ -1808,7 +1808,17 @@ function clearPopupConfig(){
   if(!confirm('ลบ Popup ทั้งหมดใช่ไหม?')) return;
   localStorage.removeItem('hub_popup_cfg');
   localStorage.removeItem('hub_popup_shown');
-  renderPopupAdmin();
+  // clear preview
+  const img = document.getElementById('popup-preview-img');
+  const empty = document.getElementById('popup-preview-empty');
+  const urlInput = document.getElementById('popup-url');
+  const linkInput = document.getElementById('popup-link');
+  const toggle = document.getElementById('popup-enabled-toggle');
+  if(img){ img.src=''; img.style.display='none'; }
+  if(empty) empty.style.display='';
+  if(urlInput) urlInput.value='';
+  if(linkInput) linkInput.value='';
+  if(toggle) toggle.checked=false;
   showFeatToast('ลบ Popup แล้ว ✅');
 }
 function togglePopupEnabled(on){
