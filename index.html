@@ -369,18 +369,6 @@ input:checked+.feat-slider:before{transform:translateX(20px)}
           <div id="nb-sub-el" style="font-size:12.5px;color:#7c6b9e">จะได้ไม่ต้องเสียเวลากรอกข้อมูลใหม่ทุกครั้งก่อนจะเข้าใช้งาน</div>
         </div>
       </div>
-      <div style="border-top:1px solid #f3e8ff;padding-top:10px">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
-          <span style="font-size:15px">⭐</span>
-          <span id="nb2-title-el" style="font-weight:700;font-size:14px;color:#4a3f6b">โปรแกรมบันทึกคะแนนคำนวณเกรด</span>
-          <span id="hero-premium-badge" style="display:none;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px">Premium 39฿/เดือน</span>
-        </div>
-        <div id="nb2-body-el" style="font-size:12.5px;color:#7c6b9e;line-height:1.75;padding-left:22px">
-          มากำหนดอนาคตตัวเองด้วยตัวเราเอง<br>
-          🔒 ระบบเก็บข้อมูลเป็นความลับ — ผู้พัฒนาไม่มีสิทธิ์เข้าดูคะแนนของคุณ<br>
-          <strong style="color:#7c3aed">ลองใช้เราช่วยตัดสินใจ ดรอป ก่อนเก็บ F กันเถอะ 🎯</strong>
-        </div>
-      </div>
     </div>
 
     <div class="feature-cards">
@@ -1651,7 +1639,7 @@ function loadFeaturePrem(){
 function saveFeaturePrem(prem){ localStorage.setItem('hub_feature_prem', JSON.stringify(prem)); }
 function getFeaturePrem(id){
   const prem = loadFeaturePrem();
-  return prem[id] !== undefined ? prem[id] : (id==='grades');
+  return prem[id] !== undefined ? prem[id] : false;
 }
 function applyFeatureVisibility(){
   const isPremium = S.subStatus === 'active';
