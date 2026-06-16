@@ -399,30 +399,12 @@ input:checked+.feat-slider:before{transform:translateX(20px)}
         <div class="fc-desc">อ่านรีวิวจากรุ่นพี่ ก่อนเลือกลงวิชา ครอบคลุมทุกคณะในมหาวิทยาลัยเชียงใหม่</div>
         <div class="fc-arrow">→</div>
       </div>
-      <div class="feat-card" id="fc-daily" onclick="gotoFeature('daily-planner')">
-        <div class="fc-icon">🗓️</div>
-        <div class="fc-badge free" id="fcbadge-daily">FREE</div>
-        <div class="fc-title">Daily Planner</div>
-        <div class="fc-desc">จดงาน วางแผนรายวัน พร้อมวันหยุดไทย บันทึกโน้ตแต่ละวัน</div>
-        <div class="fc-arrow">→</div>
-      </div>
     </div>
 
     <div class="hero-footer"></div>
   </div>
 </div>
 
-
-<!-- ═══════ DAILY PLANNER ═══════ -->
-<div class="screen" id="s-daily-planner">
-  <div style="display:flex;flex-direction:column;height:100vh">
-    <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;background:#fff;border-bottom:1px solid #e9d5ff;flex-shrink:0">
-      <button onclick="goHero()" style="background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:20px;padding:7px 16px;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:700;cursor:pointer">← กลับ</button>
-      <span style="font-size:14px;font-weight:700;color:#553c9a">🗓️ Daily Planner</span>
-    </div>
-    <iframe src="../todolist-planner/dist/index.html" style="flex:1;border:none;width:100%" title="Daily Planner"></iframe>
-  </div>
-</div>
 
 <!-- ═══════ GRADES ═══════ -->
 <div class="screen" id="s-grades">
@@ -1306,8 +1288,6 @@ function gotoFeature(f){
   } else if(f==='grades'){
     if(!S.user){ S.pendingFeature='grades'; openModal('m-login'); return; }
     showScreen('s-grades'); refreshGate();
-  } else if(f==='daily-planner'){
-    showScreen('s-daily-planner');
   }
 }
 
@@ -1686,23 +1666,34 @@ const FEATURE_LIST = [
   { id:'planner', icon:'📅', name:'วางแผนการเรียน',              badge:'free', badgeText:'FREE' },
   { id:'grades',  icon:'🧮', name:'คำนวณเกรด',                   badge:'pro',  badgeText:'39฿/เดือน' },
   { id:'review',  icon:'⭐', name:'รีวิววิชาเรียนครบทุกวิชาในมช.', badge:'free', badgeText:'FREE' },
-  { id:'daily',   icon:'🗓️', name:'Daily Planner',               badge:'free', badgeText:'FREE' },
 ];
-function loadFeatureVis(){
-  try{ return JSON.parse(localStorage.getItem('hub_feature_vis')||'{}'); }catch(e){ return {}; }
+// feature on/off + premium-lock state lives in Supabase (table: feature_settings)
+// so admin toggles apply to every user's screen, not just the admin's own browser.
+let FEATURE_SETTINGS = {};
+async function loadFeatureSettingsFromDB(){
+  try{
+    const{data,error}=await sb.from('feature_settings').select('*');
+    if(error) throw error;
+    FEATURE_SETTINGS = {};
+    (data||[]).forEach(r=>{ FEATURE_SETTINGS[r.feature_id] = { on:r.is_on, prem:r.is_premium }; });
+  }catch(e){ console.error('loadFeatureSettingsFromDB:',e); }
 }
-function saveFeatureVis(vis){ localStorage.setItem('hub_feature_vis', JSON.stringify(vis)); }
 function getFeatureOn(id){
-  const vis = loadFeatureVis();
-  return vis[id] !== undefined ? vis[id] : true;
+  const s = FEATURE_SETTINGS[id];
+  return s && s.on !== undefined ? s.on : true;
 }
-function loadFeaturePrem(){
-  try{ return JSON.parse(localStorage.getItem('hub_feature_prem')||'{}'); }catch(e){ return {}; }
-}
-function saveFeaturePrem(prem){ localStorage.setItem('hub_feature_prem', JSON.stringify(prem)); }
 function getFeaturePrem(id){
-  const prem = loadFeaturePrem();
-  return prem[id] !== undefined ? prem[id] : false;
+  const s = FEATURE_SETTINGS[id];
+  return s && s.prem !== undefined ? s.prem : false;
+}
+function subscribeFeatureSettings(){
+  sb.channel('feature_settings_rt')
+    .on('postgres_changes',{event:'*',schema:'public',table:'feature_settings'},async()=>{
+      await loadFeatureSettingsFromDB();
+      applyFeatureVisibility();
+      if(document.getElementById('sec-features')?.classList.contains('active')) renderFeatureAdmin();
+    })
+    .subscribe();
 }
 function applyFeatureVisibility(){
   const isPremium = S.subStatus === 'active';
@@ -1782,21 +1773,33 @@ function renderFeatureAdmin(){
     </div>
   `).join('');
 }
-function toggleFeature(id, on){
-  const vis = loadFeatureVis();
-  vis[id] = on;
-  saveFeatureVis(vis);
+async function toggleFeature(id, on){
+  FEATURE_SETTINGS[id] = { ...(FEATURE_SETTINGS[id]||{}), on };
   applyFeatureVisibility();
   const name = FEATURE_LIST.find(f=>f.id===id)?.name||id;
-  showFeatToast(`${name}: ${on?'เปิดแสดงแล้ว ✅':'ซ่อนแล้ว ✅'}`);
+  try{
+    await sb.from('feature_settings').upsert({
+      feature_id:id, is_on:on, is_premium:getFeaturePrem(id), updated_at:new Date().toISOString()
+    },{onConflict:'feature_id'});
+    showFeatToast(`${name}: ${on?'เปิดแสดงแล้ว ✅':'ซ่อนแล้ว ✅'}`);
+  }catch(e){
+    alert('บันทึกไม่สำเร็จ: '+e.message);
+    await loadFeatureSettingsFromDB(); applyFeatureVisibility(); renderFeatureAdmin();
+  }
 }
-function toggleFeaturePrem(id, on){
-  const prem = loadFeaturePrem();
-  prem[id] = on;
-  saveFeaturePrem(prem);
+async function toggleFeaturePrem(id, on){
+  FEATURE_SETTINGS[id] = { ...(FEATURE_SETTINGS[id]||{}), prem:on };
   applyFeatureVisibility();
   const name = FEATURE_LIST.find(f=>f.id===id)?.name||id;
-  showFeatToast(`${name}: ${on?'ล็อค Premium แล้ว 🔒':'เปิดให้ทุกคนแล้ว 🔓'}`);
+  try{
+    await sb.from('feature_settings').upsert({
+      feature_id:id, is_on:getFeatureOn(id), is_premium:on, updated_at:new Date().toISOString()
+    },{onConflict:'feature_id'});
+    showFeatToast(`${name}: ${on?'ล็อค Premium แล้ว 🔒':'เปิดให้ทุกคนแล้ว 🔓'}`);
+  }catch(e){
+    alert('บันทึกไม่สำเร็จ: '+e.message);
+    await loadFeatureSettingsFromDB(); applyFeatureVisibility(); renderFeatureAdmin();
+  }
 }
 function showFeatToast(msg){
   let t = document.getElementById('feat-toast');
@@ -2145,7 +2148,6 @@ const PI_DESC = {
   planner: 'จัดตารางเรียนทั้ง 4 ปี ติดตามหน่วยกิตและสถานะแต่ละวิชา',
   grades:  'คำนวณเกรดอัตโนมัติ วางแผนว่าจะดรอปหรือสู้ต่อ',
   review:  'อ่านรีวิววิชาจากรุ่นพี่ครบทุกวิชาในมช.',
-  daily:   'จดงาน วางแผนรายวัน พร้อมวันหยุดไทย',
 };
 function piGoStep1(){
   document.getElementById('pi-step1').style.display='';
@@ -2540,7 +2542,11 @@ checkExpiry();
     renderTopUser(); checkExpiry();
   }catch(e){ console.error(e); }
 })();
-applyFeatureVisibility();
+(async function(){
+  await loadFeatureSettingsFromDB();
+  applyFeatureVisibility();
+  subscribeFeatureSettings();
+})();
 setTimeout(showPopupAd, 800);
 (function(){
   const go = sessionStorage.getItem('hub_goto');
