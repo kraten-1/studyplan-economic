@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CMU Econ Planner</title>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'Sarabun',sans-serif;font-size:15px;background:#fff0f5;color:#2d3748}
@@ -22,6 +23,15 @@
     /* Save for grades button */
     .btn-save-grades{display:block;width:100%;max-width:400px;margin:12px auto 0;padding:13px;background:linear-gradient(135deg,#553c9a,#7c3aed);color:#fff;border:none;border-radius:12px;font-family:'Sarabun',sans-serif;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(124,58,237,.35)}
     .btn-save-grades:hover{opacity:.9}
+    /* Save / Delete data row */
+    .data-actions{display:flex;gap:10px;max-width:400px;margin:10px auto 0}
+    .btn-save-data,.btn-del-data{flex:1;padding:12px;border:none;border-radius:12px;font-family:'Sarabun',sans-serif;font-size:14px;font-weight:700;cursor:pointer}
+    .btn-save-data{background:linear-gradient(135deg,#38a169,#2f855a);color:#fff;box-shadow:0 4px 14px rgba(56,161,105,.35)}
+    .btn-save-data:hover{opacity:.9}
+    .btn-del-data{background:#fff;color:#e53e3e;border:1.5px solid #feb2b2}
+    .btn-del-data:hover{background:#fff5f5}
+    .planner-toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:linear-gradient(135deg,#553c9a,#7c3aed);color:#fff;padding:12px 28px;border-radius:30px;font-family:'Sarabun',sans-serif;font-size:14px;font-weight:700;box-shadow:0 8px 24px rgba(124,58,237,.35);z-index:9999;transition:transform .3s,opacity .3s;opacity:0;pointer-events:none;text-align:center;max-width:90vw}
+    .planner-toast.show{transform:translateX(-50%) translateY(0);opacity:1}
     /* Program selector */
     .prog-row{display:flex;justify-content:center;margin-bottom:20px}
     .prog-seg .seg-opt{padding:9px 28px;font-size:15px}
@@ -209,6 +219,10 @@
     <div id="search-results-panel" style="display:none"></div>
     <button class="btn-gen" id="txt-btn-gen" onclick="generateResult()"></button>
     <button class="btn-save-grades" onclick="saveForGrades()">📊 บันทึกวิชาที่กำลังเรียน → ส่งไปคำนวณเกรด</button>
+    <div class="data-actions">
+      <button class="btn-save-data" onclick="savePlannerData()">💾 บันทึกข้อมูล</button>
+      <button class="btn-del-data" onclick="deletePlannerDataUser()">🗑️ ลบข้อมูล</button>
+    </div>
   </div>
 </div>
 
@@ -218,6 +232,10 @@
     <button class="btn-back" id="txt-btn-back" onclick="goBack()"></button>
     <div id="result-content"></div>
 
+    <div class="data-actions">
+      <button class="btn-save-data" onclick="savePlannerData()">💾 บันทึกข้อมูล</button>
+      <button class="btn-del-data" onclick="deletePlannerDataUser()">🗑️ ลบข้อมูล</button>
+    </div>
 
     <div class="support-box">
       <h3>💜 <span id="txt-support-title"></span></h3>
@@ -252,6 +270,8 @@
   </div>
 </div>
 
+<div class="planner-toast" id="planner-toast"></div>
+
 <script>
 // ══════════════════════════════════════════
 // STATE
@@ -263,6 +283,105 @@ let customMinor = [];
 let customFree  = [];
 let searchQ = '';
 let statusFilter = 'all';
+
+// ══════════════════════════════════════════
+// PERSISTENCE — localStorage (always) + Supabase planner_data (if logged in)
+// ══════════════════════════════════════════
+const sbc = supabase.createClient(
+  'https://ebvhqyzfloxinpoubvxc.supabase.co',
+  'sb_publishable_Q3HkOHw2BSzcGcvjFRUCsA_J8IXkVmX'
+);
+function getHubUser(){
+  try{ return JSON.parse(localStorage.getItem('hub_user')||'null'); }catch(e){ return null; }
+}
+function showPlannerToast(msg){
+  const el = document.getElementById('planner-toast');
+  if(!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 2600);
+}
+function collectPlannerState(){
+  return { prog, yearSem: document.getElementById('sel-ys')?.value || '', ST, customMinor, customFree };
+}
+function applyPlannerState(st){
+  if(!st) return;
+  prog = st.prog || 'regular';
+  document.getElementById('pt-regular').className = 'seg-opt' + (prog==='regular'?' active':'');
+  document.getElementById('pt-intl').className    = 'seg-opt' + (prog==='intl'?' active':'');
+  Object.keys(ST).forEach(k=>delete ST[k]);
+  Object.assign(ST, st.ST || {});
+  customMinor.length = 0; customMinor.push(...(st.customMinor||[]));
+  customFree.length  = 0; customFree.push(...(st.customFree||[]));
+  applyTranslations();
+  buildForm();
+  renderCustom('minor');
+  renderCustom('free');
+  if(st.yearSem) document.getElementById('sel-ys').value = st.yearSem;
+  getActiveSections().forEach(sec=>refreshBadge(sec.id));
+}
+async function savePlannerData(){
+  const state = collectPlannerState();
+  localStorage.setItem('hub_planner_state', JSON.stringify(state));
+  const user = getHubUser();
+  if(user && user.email){
+    try{
+      await sbc.from('planner_data').upsert({
+        email: user.email,
+        prog: state.prog,
+        year_sem: state.yearSem,
+        st_data: { ...state.ST, __customMinor: state.customMinor, __customFree: state.customFree },
+        clear_at: null,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'email' });
+      showPlannerToast('✅ บันทึกข้อมูลแล้ว (ซิงก์กับบัญชีของคุณ)');
+    }catch(e){
+      console.error('savePlannerData:', e);
+      showPlannerToast('⚠️ บันทึกในเครื่องนี้แล้ว แต่ซิงก์ไป Supabase ไม่สำเร็จ');
+    }
+  } else {
+    showPlannerToast('✅ บันทึกข้อมูลในเครื่องนี้แล้ว (เข้าสู่ระบบเพื่อซิงก์ข้ามอุปกรณ์)');
+  }
+}
+async function deletePlannerDataUser(){
+  if(!confirm('ต้องการลบข้อมูลแผนการเรียนทั้งหมดใช่ไหม? การลบนี้ไม่สามารถย้อนกลับได้')) return;
+  localStorage.removeItem('hub_planner_state');
+  Object.keys(ST).forEach(k=>delete ST[k]);
+  customMinor.length = 0;
+  customFree.length  = 0;
+  buildForm();
+  renderCustom('minor');
+  renderCustom('free');
+  const user = getHubUser();
+  if(user && user.email){
+    try{
+      await sbc.from('planner_data').update({
+        st_data: {}, clear_at: new Date().toISOString(), updated_at: new Date().toISOString()
+      }).eq('email', user.email);
+    }catch(e){ console.error('deletePlannerDataUser:', e); }
+  }
+  showPlannerToast('🗑️ ลบข้อมูลแล้ว');
+}
+async function loadPlannerData(){
+  const user = getHubUser();
+  if(user && user.email){
+    try{
+      const{data,error} = await sbc.from('planner_data').select('*').eq('email',user.email).maybeSingle();
+      if(error) throw error;
+      if(data && data.st_data && !data.clear_at){
+        const stData = { ...data.st_data };
+        const cMinor = stData.__customMinor || []; delete stData.__customMinor;
+        const cFree  = stData.__customFree  || []; delete stData.__customFree;
+        applyPlannerState({ prog:data.prog||'regular', yearSem:data.year_sem||'', ST:stData, customMinor:cMinor, customFree:cFree });
+        return;
+      }
+    }catch(e){ console.error('loadPlannerData:', e); }
+  }
+  try{
+    const raw = localStorage.getItem('hub_planner_state');
+    if(raw) applyPlannerState(JSON.parse(raw));
+  }catch(e){}
+}
 
 function getActiveSections() { return prog === 'intl' ? SECTIONS_INTL : SECTIONS; }
 
@@ -1102,6 +1221,7 @@ function goPayment(){
 // Init
 applyTranslations();
 buildForm();
+loadPlannerData();
 </script>
 </body>
 </html>
