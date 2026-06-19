@@ -186,6 +186,13 @@
         <button class="seg-opt"        id="pt-intl"    onclick="setProg('intl')">นานาชาติ</button>
       </div>
     </div>
+    <!-- Curriculum version selector (ภาคปกติ only) -->
+    <div class="prog-row" id="curr-row">
+      <div class="seg-wrap prog-seg">
+        <button class="seg-opt active" id="ct-old"   onclick="setCurr('old')">หลักสูตร 60 (ปี 3–4)</button>
+        <button class="seg-opt"        id="ct-new68" onclick="setCurr('new68')">หลักสูตร 68 (ปี 1–2)</button>
+      </div>
+    </div>
 
     <div class="setup-header">
       <h1>🎓 CMU Econ Planner</h1>
@@ -283,6 +290,7 @@ let customMinor = [];
 let customFree  = [];
 let searchQ = '';
 let statusFilter = 'all';
+let curr = 'old'; // 'old' = หลักสูตร 60 (ปี 3-4), 'new68' = หลักสูตร 68 (ปี 1-2)
 
 // ══════════════════════════════════════════
 // PERSISTENCE — localStorage (always) + Supabase planner_data (if logged in)
@@ -383,7 +391,10 @@ async function loadPlannerData(){
   }catch(e){}
 }
 
-function getActiveSections() { return prog === 'intl' ? SECTIONS_INTL : SECTIONS; }
+function getActiveSections() {
+  if (prog === 'intl') return SECTIONS_INTL;
+  return curr === 'new68' ? SECTIONS_NEW : SECTIONS;
+}
 
 // ══════════════════════════════════════════
 // TRANSLATIONS
@@ -693,6 +704,182 @@ const SECTIONS_INTL = [
 ];
 
 // ══════════════════════════════════════════
+// COURSE DATABASE — หลักสูตรใหม่ พ.ศ.2568 (รหัส 68-72)
+// ══════════════════════════════════════════
+const SECTIONS_NEW = [
+  { id:'ge', label:'1. หมวดวิชาศึกษาทั่วไป GE (24 cr) — หลักสูตร 68', labelEn:'1. General Education GE (24 cr) — Curriculum 2025', req:24, groups:[
+    { label:'Language Literacy — ไม่ผ่าน B1 (ต้องเรียนทั้ง 3 วิชา)', labelEn:'Language Literacy — Below B1 (take all 3)', courses:[
+      {code:'001101',name:'Fundamental English 1',cr:3},
+      {code:'001102',name:'Fundamental English 2',cr:3},
+      {code:'001228',name:'English for Business and Economics',cr:3},
+    ]},
+    { label:'Language Literacy — ผ่าน B1+ (เลือก 2 วิชา ≥6 cr จากรายการ)', labelEn:'Language Literacy — B1+ (choose 2 courses ≥6 cr from list)', pick:2, courses:[
+      {code:'001201',name:'Critical Reading and Effective Writing',cr:3},
+      {code:'001233',name:'English for Standardized Tests',cr:3},
+      {code:'001241',name:'Oral Communication in English',cr:3},
+      {code:'001242',name:'Exploring Reading and Writing Skills',cr:3},
+      {code:'001243',name:'Basics of Effective Essay Writing',cr:3},
+      {code:'001244',name:'English Language, Culture, and Mind',cr:3},
+      {code:'001245',name:'Reading English in the Media',cr:3},
+      {code:'001246',name:'English Language in the Hotel Industry',cr:3},
+      {code:'001247',name:'English for Tour Guides and Travel Agents',cr:3},
+      {code:'001248',name:'English for Airline Services and Operations',cr:3},
+      {code:'001249',name:'English for Travelling',cr:3},
+    ]},
+    { label:'Digital Literacy — เลือก 1 วิชา (บังคับ)', labelEn:'Digital Literacy — Required choose 1', pick:1, courses:[
+      {code:'204100',name:'Artificial Intelligence and Digital Essentials',cr:3},
+      {code:'261111',name:'Internet and Online Community in the Age of AI',cr:3},
+      {code:'953111',name:'Software for Everyday Life',cr:3},
+    ]},
+    { label:'Global Citizen — บังคับ', labelEn:'Global Citizen — Required', courses:[
+      {code:'140104',name:'Citizenship',cr:3},
+    ]},
+    { label:'Creativity & Innovation — เลือก 1 วิชา', labelEn:'Creativity & Innovation — Choose 1', pick:1, courses:[
+      {code:'063101',name:'Learning for Self-Development',cr:3},
+      {code:'201116',name:'Science and Global Warming',cr:3},
+      {code:'201190',name:'Critical Thinking, Problem Solving and Science Communication',cr:3},
+      {code:'203100',name:'Chemistry in Everyday Life',cr:3},
+      {code:'610111',name:'Packaging for Marketing',cr:3},
+      {code:'610112',name:'Food Product Innovation',cr:3},
+      {code:'951100',name:'Modern Life and Animation',cr:3},
+    ]},
+    { label:'Entrepreneurial Skills — เลือก 1 วิชา', labelEn:'Entrepreneurial Skills — Choose 1', pick:1, courses:[
+      {code:'128100',name:'Basic Good Governance in Administration',cr:3},
+      {code:'701185',name:'Simple Tax Management Technique',cr:3},
+      {code:'702101',name:'Finance for Daily Life',cr:3},
+      {code:'703103',name:'Introduction to Entrepreneurship and Business',cr:3},
+      {code:'888107',name:'Business Startup on Digital Platform',cr:3},
+      {code:'888109',name:'Introduction to Emerging Rules of Disruptive Technology in Trade',cr:3},
+    ]},
+    { label:'GE วิชาเลือก — เลือก 1 จากกลุ่ม Digital Literacy / Global Citizen / AI', labelEn:'GE Elective — Choose 1 from Digital Literacy / Global Citizen / AI group', pick:1, courses:[
+      {code:'009103',name:'Information Literacy and Information Presentation',cr:3},
+      {code:'954101',name:'Introduction to Modern Management and Information Technology',cr:3},
+      {code:'109115',name:'Life and Aesthetics',cr:3},
+      {code:'127100',name:'Politics in Everyday Life',cr:3},
+      {code:'152100',name:'Social Science Around Us',cr:3},
+      {code:'204171',name:'Artificial Intelligence Among Us',cr:3},
+    ]},
+  ]},
+  { id:'core_req', label:'2. วิชาแกนบังคับ (18 cr)', labelEn:'2. Core Required (18 cr)', req:18, groups:[
+    { label:'ต้องเรียนทั้งหมด', labelEn:'Required — take all', courses:[
+      {code:'126101',name:'Introduction to International Relations',cr:3},
+      {code:'206171',name:'General Mathematics 1',cr:3},
+      {code:'208271',name:'Elementary Statistics for Social Sciences 1',cr:3},
+      {code:'701100',name:'Elementary Accounting 1',cr:3},
+      {code:'751306',name:'Introduction to Communication in Economics',cr:3},
+    ]},
+    { label:'วิชากฎหมาย — เลือก 1', labelEn:'Law Course — Choose 1', pick:1, courses:[
+      {code:'176101',name:'Introduction to Law',cr:3},
+      {code:'176220',name:'Fundamental Business Law',cr:3},
+    ]},
+  ]},
+  { id:'core_elec', label:'3. วิชาแกนเลือก (≥9 cr — เลือก ≥3 วิชา)', labelEn:'3. Core Elective (≥9 cr — choose ≥3)', req:9, groups:[
+    { label:'เลือก 3 วิชาขึ้นไปจากรายการด้านล่าง', labelEn:'Choose 3 or more courses from the list below', pick:3, courses:[
+      {code:'001210',name:'Oral Expression 1',cr:3},
+      {code:'001230',name:'Introduction to Language',cr:3},
+      {code:'001231',name:'English Phonetics',cr:3},
+      {code:'001250',name:'Introduction to Literature',cr:3},
+      {code:'001281',name:'English Language and Multicultures',cr:3},
+      {code:'001310',name:'Oral Expression 2',cr:3},
+      {code:'013103',name:'General Psychology',cr:3},
+      {code:'154281',name:'Economic Geography',cr:3},
+      {code:'126324',name:'International Organizations',cr:3},
+      {code:'204102',name:'Intelligent Data Analysis: Survey of Techniques and Applications',cr:3},
+      {code:'206207',name:'Solid Analytic Geometry',cr:3},
+      {code:'206266',name:'Mathematics for Everyday Life',cr:3},
+      {code:'208264',name:'Principles of Statistics',cr:3},
+      {code:'208348',name:'Non-Parametric Statistics',cr:3},
+      {code:'208383',name:'Industrial Statistics',cr:3},
+      {code:'208384',name:'Statistics for Industrial Management',cr:3},
+      {code:'252180',name:'Basic Renewable Energy',cr:3},
+      {code:'365201',name:'Natural Resources and Agriculture',cr:3},
+      {code:'703322',name:'Communication for Business Results',cr:3},
+      {code:'851200',name:'Introduction to Integrated Marketing Communication',cr:3},
+      {code:'888121',name:'Digital Economy',cr:3},
+      {code:'954140',name:'Information Technology Literacy',cr:3},
+    ]},
+  ]},
+  { id:'major_req', label:'4. วิชาเอกบังคับ (39 cr)', labelEn:'4. Major Required (39 cr)', req:39, groups:[
+    { label:'ต้องเรียนทั้งหมด 13 วิชา', labelEn:'Required — all 13 courses', courses:[
+      {code:'751101',name:'Principles of Microeconomics',cr:3},
+      {code:'751102',name:'Principles of Macroeconomics',cr:3},
+      {code:'751209',name:'Introduction to Mathematical Economics',cr:3},
+      {code:'751301',name:'Microeconomic Theory 1',cr:3},
+      {code:'751302',name:'Microeconomic Theory 2',cr:3},
+      {code:'751304',name:'Economic Statistics',cr:3},
+      {code:'751305',name:'Econometrics 1',cr:3},
+      {code:'751308',name:'Macroeconomic Theory 1',cr:3},
+      {code:'751309',name:'Macroeconomic Theory 2',cr:3},
+      {code:'751405',name:'Theory of Economic Development',cr:3},
+      {code:'751408',name:'Research Methods in Economics',cr:3},
+      {code:'751409',name:'Research Exercise in Current Economics Issues',cr:3},
+      {code:'751414',name:'Introduction to Applied Econometrics',cr:3},
+    ]},
+  ]},
+  { id:'major_elec', label:'5. วิชาเอกเลือก (≥33 cr)', labelEn:'5. Major Elective (≥33 cr)', req:33, groups:[
+    { label:'2.2.2.1 บังคับเลือก 1 วิชา (3 cr) จากกลุ่มนี้', labelEn:'2.2.2.1 Must choose 1 course (3 cr) from this group', pick:1, courses:[
+      {code:'751326',name:'ASEAN Economy in the Global Economic Context',cr:3},
+      {code:'751402',name:'Green Economy',cr:3},
+      {code:'751442',name:'Regional Economics',cr:3},
+      {code:'751446',name:'Economy of Thailand',cr:3},
+      {code:'751454',name:'Behavioral Economics',cr:3},
+    ]},
+    { label:'2.2.2.2 เลือก ≥10 วิชา (≥30 cr รวม ≥15 cr ระดับ 400)', labelEn:'2.2.2.2 Choose ≥10 courses (≥30 cr with ≥15 cr at 400-level)', pick:10, courses:[
+      {code:'751202',name:'History of Economic Thought',cr:3},
+      {code:'751220',name:'Economic History',cr:3},
+      {code:'751303',name:'Public Finance',cr:3},
+      {code:'751311',name:'Economics of Artificial Intelligence',cr:3},
+      {code:'751320',name:'International Business Economics',cr:3},
+      {code:'751321',name:'Community Economic Development',cr:3},
+      {code:'751322',name:'International Political Economy',cr:3},
+      {code:'751323',name:'Modern Chinese Economy',cr:3},
+      {code:'751324',name:'Modern Indian Economy in the Global Context',cr:3},
+      {code:'751325',name:'American Marketing Economics',cr:3},
+      {code:'751327',name:'ICT Economics and Telecommunications Policy',cr:3},
+      {code:'751328',name:'Economics of Environmental Management',cr:3},
+      {code:'751330',name:'Money and Banking',cr:3},
+      {code:'751332',name:'Monetary Theory',cr:3},
+      {code:'751333',name:'Applied Game Theory for Economic Analysis',cr:3},
+      {code:'751335',name:'Behavioral Economics in Finance and Investment',cr:3},
+      {code:'751340',name:'Introduction to Agricultural Economics',cr:3},
+      {code:'751343',name:'Economic Analysis of Energy and Resource Markets',cr:3},
+      {code:'751345',name:'Transportation Economics',cr:3},
+      {code:'751348',name:'Social Return on Investment Assessment',cr:3},
+      {code:'751349',name:'Space Economy',cr:3},
+      {code:'751401',name:'International Economics',cr:3},
+      {code:'751403',name:'Econometrics 2',cr:3},
+      {code:'751411',name:'The Economics of European Economic Integration',cr:3},
+      {code:'751413',name:'Introduction to Input-Output Analysis',cr:3},
+      {code:'751417',name:'Managerial Economics',cr:3},
+      {code:'751418',name:'Business Cycle Theory',cr:3},
+      {code:'751419',name:'Economic Theory and Entrepreneurship',cr:3},
+      {code:'751420',name:'International Finance',cr:3},
+      {code:'751421',name:'Economics of Investment',cr:3},
+      {code:'751422',name:'Technical Analysis for Investment',cr:3},
+      {code:'751424',name:'Economic Development of Developing Countries',cr:3},
+      {code:'751425',name:'Economic Growth',cr:3},
+      {code:'751427',name:'Economic Planning',cr:3},
+      {code:'751428',name:'Political Economy',cr:3},
+      {code:'751437',name:'Tax System',cr:3},
+      {code:'751440',name:'Labor Economics',cr:3},
+      {code:'751441',name:'Economics of Water Resources',cr:3},
+      {code:'751443',name:'Industrial Economics',cr:3},
+      {code:'751444',name:'Urban Economics',cr:3},
+      {code:'751445',name:'Natural Resource Allocation and Policy',cr:3},
+      {code:'751447',name:'Seminar in Current Economic Problems',cr:3},
+      {code:'751448',name:'Seminar in Global Investment Issues',cr:3},
+      {code:'751451',name:'Health Economics',cr:3},
+      {code:'751452',name:'Economics of Climate Change',cr:3},
+      {code:'751453',name:'Developing Application for Data Analytics in Economics',cr:3},
+      {code:'751455',name:'Economics of the Welfare State',cr:3},
+      {code:'751464',name:'Behavioral Economics in Organizational Finance',cr:3},
+      {code:'751471',name:'Economics of Decentralized Finance',cr:3},
+      {code:'751472',name:'Economics of Tokenomics and Non-Fungible Token',cr:3},
+    ]},
+  ]},
+];
+
+// ══════════════════════════════════════════
 // LANGUAGE & PROGRAM
 // ══════════════════════════════════════════
 function setLang(l) {
@@ -715,6 +902,8 @@ function setProg(p) {
   if (cb) cb.style.display = 'none';
   document.getElementById('pt-regular').className = 'seg-opt' + (p==='regular'?' active':'');
   document.getElementById('pt-intl').className    = 'seg-opt' + (p==='intl'?' active':'');
+  const currRow = document.getElementById('curr-row');
+  if (currRow) currRow.style.display = p === 'regular' ? '' : 'none';
   const thBtn = document.getElementById('lt-th');
   thBtn.disabled = false;
   if (p === 'intl') {
@@ -727,6 +916,21 @@ function setProg(p) {
   }
 }
 
+function setCurr(c) {
+  curr = c;
+  searchQ = ''; statusFilter = 'all';
+  const si = document.getElementById('search-input');
+  if (si) si.value = '';
+  const cb = document.getElementById('search-clear-btn');
+  if (cb) cb.style.display = 'none';
+  document.getElementById('ct-old').className   = 'seg-opt' + (c==='old'?' active':'');
+  document.getElementById('ct-new68').className = 'seg-opt' + (c==='new68'?' active':'');
+  applyTranslations();
+  buildForm();
+  renderCustom('minor');
+  renderCustom('free');
+}
+
 function applyTranslations() {
   const t = T[lang];
   document.getElementById('pt-regular').textContent  = t.progRegular;
@@ -735,6 +939,10 @@ function applyTranslations() {
     ? (lang==='en'
       ? 'Enter courses you have already taken and we\'ll generate your study plan automatically.\nBachelor of Economics (International Program), CMU — Academic Track (135 credits)'
       : 'กรอกวิชาที่เคยเรียนมาแล้ว ระบบจะสรุปแผนการเรียนให้อัตโนมัติ\nหลักสูตรนานาชาติ เศรษฐศาสตรบัณฑิต มช. — แผนวิชาการ (135 หน่วยกิต)')
+    : curr==='new68'
+    ? (lang==='en'
+      ? 'Enter courses you have already taken and we\'ll generate your study plan automatically.\nBachelor of Economics CMU — Curriculum B.E.2568 (Student ID 68–72) · Type 1: Research (≥129 cr)'
+      : 'กรอกวิชาที่เคยเรียนมาแล้ว ระบบจะสรุปแผนการเรียนให้อัตโนมัติ\nหลักสูตรเศรษฐศาสตรบัณฑิต มช. พ.ศ.2568 (รหัส 68–72) · แบบ 1 ปัญหาพิเศษ (≥129 หน่วยกิต)')
     : t.subtitle;
   document.getElementById('txt-tip-title').textContent = t.tipTitle;
   document.getElementById('txt-tip-body').textContent  = t.tipBody;
@@ -945,6 +1153,7 @@ function generateResult() {
   const t=T[lang];
   const activeSec=getActiveSections();
   const isIntl=prog==='intl';
+  const isNew=curr==='new68'&&!isIntl;
 
   function sumSec(id,s){
     const sec=activeSec.find(x=>x.id===id); if(!sec) return 0;
@@ -962,14 +1171,15 @@ function generateResult() {
   const freDone=customFree.filter(c=>c.s==='done').reduce((a,c)=>a+c.cr,0);
   const freCur=customFree.filter(c=>c.s==='current').reduce((a,c)=>a+c.cr,0);
 
-  const coreTotal=isIntl?33:30;
-  const majReqCr=isIntl?45:42;
-  const ceReq=isIntl?21:12;
-  const ce4done=isIntl?melDone:coopDone+melDone;
-  const ce4cur=isIntl?melCur:coopCur+melCur;
+  const coreTotal=isIntl?33:isNew?27:30;
+  const majReqCr=isIntl?45:isNew?39:42;
+  const ceReq=isIntl?21:isNew?33:12;
+  const ce4done=isIntl||isNew?melDone:coopDone+melDone;
+  const ce4cur=isIntl||isNew?melCur:coopCur+melCur;
 
   const totalDone=geDone+crqDone+celDone+mrqDone+melDone+coopDone+minDone+freDone;
-  const pct=Math.min(100,Math.round(totalDone/135*100));
+  const totalCr=isNew?129:135;
+  const pct=Math.min(100,Math.round(totalDone/totalCr*100));
 
   function chip(c){
     const s=ST[c.code]?.s||'none',g=ST[c.code]?.g||'';
@@ -1008,35 +1218,61 @@ function generateResult() {
     return base;
   }
 
-  const geS=geDone>=30?'done':geDone>0?'warn':'miss';
+  const geS=geDone>=(isNew?24:30)?'done':geDone>0?'warn':'miss';
   const coreS=(crqDone+celDone)>=coreTotal?'done':(crqDone+celDone)>0?'warn':'miss';
   const majS=mrqDone>=majReqCr?'done':mrqDone>0?'warn':'miss';
   const ceS=ce4done>=ceReq?'done':ce4done>0?'warn':'miss';
   const minS=minDone>=15?'done':minDone>0?'warn':'miss';
   const freS=freDone>=6?'done':freDone>0?'warn':'miss';
 
-  const ge1=isIntl
-    ?['001101','001102','001201','001228','204100','261111','953111','359206','888102']
-    :['001101','001102','001201','001228','261111','204100','953111','176104','851100','888102'];
-  const ge2=isIntl?['703103']:['703103','201114','063101','851103'];
-  const ge3=isIntl?['140104','154104','159151','951100']:['140104','057139','154104','951100'];
+  let ge1,ge2,ge3,ge1Req,ge2Req,ge3Req,ge1lbl,ge2lbl,ge3lbl;
+  if(isNew){
+    ge1=['001101','001102','001228','001201','001233','001241','001242','001243','001244','001245','001246','001247','001248','001249'];
+    ge2=['204100','261111','953111','140104','063101','201116','201190','203100','610111','610112','951100'];
+    ge3=['128100','701185','702101','703103','888107','888109','009103','954101','109115','127100','152100','204171'];
+    ge1Req=9; ge2Req=9; ge3Req=6;
+    ge1lbl=lang==='en'?'Language Literacy (9 cr)':'Language Literacy (9 cr)';
+    ge2lbl=lang==='en'?'Digital / Global Citizen / Creativity & Innovation':'Digital / Global Citizen / Creativity & Innovation';
+    ge3lbl=lang==='en'?'Entrepreneurial Skills + GE Elective':'Entrepreneurial Skills + GE Elective';
+  } else if(isIntl){
+    ge1=['001101','001102','001201','001228','204100','261111','953111','359206','888102'];
+    ge2=['703103'];
+    ge3=['140104','154104','159151','951100'];
+    ge1Req=18; ge2Req=3; ge3Req=9;
+    const sb=T[lang].subGe;
+    ge1lbl=sb[0]; ge2lbl=sb[1]; ge3lbl=sb[2];
+  } else {
+    ge1=['001101','001102','001201','001228','261111','204100','953111','176104','851100','888102'];
+    ge2=['703103','201114','063101','851103'];
+    ge3=['140104','057139','154104','951100'];
+    ge1Req=18; ge2Req=6; ge3Req=6;
+    const sb=T[lang].subGe;
+    ge1lbl=sb[0]; ge2lbl=sb[1]; ge3lbl=sb[2];
+  }
   function geChips(codes){return activeSec[0].groups.flatMap(g=>g.courses).filter(c=>codes.includes(c.code)).map(chip).join('');}
 
   // sub-node badge calculations
   const _geAll=activeSec[0].groups.flatMap(g=>g.courses);
   function _geD(codes){return _geAll.filter(c=>codes.includes(c.code)&&ST[c.code]?.s==='done').reduce((a,c)=>a+c.cr,0);}
   function _geC(codes){return _geAll.filter(c=>codes.includes(c.code)&&ST[c.code]?.s==='current').reduce((a,c)=>a+c.cr,0);}
-  const ge1b=_sb(_geD(ge1),_geC(ge1),18);
-  const ge2b=_sb(_geD(ge2),_geC(ge2),isIntl?3:6);
-  const ge3b=_sb(_geD(ge3),_geC(ge3),isIntl?9:6);
+  const ge1b=_sb(_geD(ge1),_geC(ge1),ge1Req);
+  const ge2b=_sb(_geD(ge2),_geC(ge2),ge2Req);
+  const ge3b=_sb(_geD(ge3),_geC(ge3),ge3Req);
   const _crqAll=activeSec.find(x=>x.id==='core_req').groups.flatMap(g=>g.courses);
-  const crqb=_sb(_crqAll.filter(c=>ST[c.code]?.s==='done').reduce((a,c)=>a+c.cr,0),_crqAll.filter(c=>ST[c.code]?.s==='current').reduce((a,c)=>a+c.cr,0),isIntl?18:15);
+  const crqb=_sb(_crqAll.filter(c=>ST[c.code]?.s==='done').reduce((a,c)=>a+c.cr,0),_crqAll.filter(c=>ST[c.code]?.s==='current').reduce((a,c)=>a+c.cr,0),isIntl?18:isNew?18:15);
   const _celAll2=activeSec.find(x=>x.id==='core_elec').groups.flatMap(g=>g.courses);
-  const celb=_sb(_celAll2.filter(c=>ST[c.code]?.s==='done').length,_celAll2.filter(c=>ST[c.code]?.s==='current').length,5,true);
+  const celb=_sb(_celAll2.filter(c=>ST[c.code]?.s==='done').length,_celAll2.filter(c=>ST[c.code]?.s==='current').length,isNew?3:5,true);
 
   const melAll=activeSec.find(x=>x.id==='major_elec').groups.flatMap(g=>g.courses);
+  const coopSec=activeSec.find(x=>x.id==='coop');
+  const coopAll=coopSec?coopSec.groups.flatMap(g=>g.courses):[];
   let node4Inner;
-  if(isIntl){
+  if(isNew){
+    const electLbl=lang==='en'?`Major Elective ≥${ceReq} cr (2.2.2.1 ≥3 cr + 2.2.2.2 ≥30 cr)`:`วิชาเอกเลือก ≥${ceReq} หน่วยกิต (2.2.2.1 ≥3 cr + 2.2.2.2 ≥30 cr)`;
+    node4Inner=`<div class="course-list">
+      <p style="font-size:12px;color:#718096;margin-bottom:4px">${electLbl}</p>
+      ${melAll.map(chip).join('')}</div>`;
+  } else if(isIntl){
     const electLbl=lang==='en'?`Major Elective ≥${ceReq} cr`:`วิชาเอกเลือก ≥${ceReq} หน่วยกิต`;
     const dblNote=lang==='en'
       ?'<p style="font-size:11.5px;color:#718096;padding:4px 10px 8px;font-style:italic">⚠ 751325, 751419, 751447 enrolled as Core Elective cannot also be counted here.</p>'
@@ -1045,7 +1281,6 @@ function generateResult() {
       <p style="font-size:12px;color:#718096;margin-bottom:4px">${electLbl}</p>
       ${melAll.map(chip).join('')}${dblNote}</div>`;
   } else {
-    const coopAll=activeSec.find(x=>x.id==='coop').groups.flatMap(g=>g.courses);
     node4Inner=`<div class="course-list">
       <p style="font-size:12px;color:#718096;margin-bottom:4px">${t.coopLabel}</p>
       ${coopAll.map(chip).join('')}
@@ -1056,27 +1291,27 @@ function generateResult() {
   const minorInner=customMinor.length?`<div class="course-list">${customMinor.map(c=>`<span class="course-chip ${c.s==='done'?'done':'current'}">${c.code} ${c.name} ${c.s==='done'?'✅':'🟣'}</span>`).join('')}</div>`:`<div class="course-list"><p class="note">${t.noMinor}</p></div>`;
   const freeInner=customFree.length?`<div class="course-list">${customFree.map(c=>`<span class="course-chip ${c.s==='done'?'done':'current'}">${c.code} ${c.name} ${c.s==='done'?'✅':'🟣'}</span>`).join('')}</div>`:`<div class="course-list"><p class="note">${t.noFree}</p></div>`;
 
-  const sb=t.subGe, sc=t.subCore;
+  const sc=t.subCore;
   const nl0=lang==='en'?'1. General Education (GE)':'1. หมวด GE';
   const nl1=lang==='en'?'2. Core Courses':'2. วิชาแกน';
   const nl2=lang==='en'?`3. Major Required (${majReqCr} cr)`:`3. วิชาเอกบังคับ (${majReqCr} cr)`;
-  const nl3=isIntl
+  const nl3=isNew||isIntl
     ?(lang==='en'?`4. Major Elective (≥${ceReq} cr)`:`4. วิชาเอกเลือก (≥${ceReq} cr)`)
     :(lang==='en'?'4. Coop + Major Elective':'4. สหกิจ + วิชาเอกเลือก');
   const nl4=lang==='en'?'5. Minor (15 cr)':'5. วิชาโท (15 cr)';
   const nl5=lang==='en'?'6. Free Elective (6 cr)':'6. วิชาเลือกเสรี (6 cr)';
 
-  const cardLabels=isIntl
+  const cardLabels=isIntl||isNew
     ?(lang==='en'?['GE','Core','Major Req.','Major Elec.','Minor','Free Elec.']:['GE','วิชาแกน','วิชาเอกบังคับ','วิชาเอกเลือก','วิชาโท','เลือกเสรี'])
     :t.cards;
-  const cardData=[{s:geS,d:geDone,r:30},{s:coreS,d:crqDone+celDone,r:coreTotal},{s:majS,d:mrqDone,r:majReqCr},{s:ceS,d:ce4done,r:ceReq},{s:minS,d:minDone,r:15},{s:freS,d:freDone,r:6}];
+  const cardData=[{s:geS,d:geDone,r:isNew?24:30},{s:coreS,d:crqDone+celDone,r:coreTotal},{s:majS,d:mrqDone,r:majReqCr},{s:ceS,d:ce4done,r:ceReq},{s:minS,d:minDone,r:15},{s:freS,d:freDone,r:6}];
 
-  const subtitle=isIntl?t.resultSubIntl(yr,sem):t.resultSub(yr,sem);
+  const subtitle=isIntl?t.resultSubIntl(yr,sem):isNew?(lang==='en'?`Curriculum B.E.2568 (ID 68-72) Type 1: Research (≥129 cr) | Year ${yr} Semester ${sem}`:`หลักสูตร พ.ศ.2568 (รหัส 68-72) แบบ 1 ปัญหาพิเศษ (≥129 หน่วยกิต) | ปีที่ ${yr} เทอม ${sem}`):t.resultSub(yr,sem);
   const html=`
     <h1 class="t-title">🎓 ${t.resultTitle}</h1>
     <p class="subtitle">${subtitle}</p>
     <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
-    <p style="font-size:13px;color:#718096;margin-bottom:12px">${t.crDone(totalDone,135)} (${pct}%)</p>
+    <p style="font-size:13px;color:#718096;margin-bottom:12px">${t.crDone(totalDone,totalCr)} (${pct}%)</p>
     <div class="legend">
       <span>${lang==='th'?'สัญลักษณ์:':'Legend:'}</span>
       <span class="course-chip done" style="margin:0">${t.legPassed}</span>
@@ -1087,10 +1322,10 @@ function generateResult() {
       ${cardData.map((c,i)=>`<div class="card ${c.s}"><div class="card-label">${cardLabels[i]}</div><div class="card-value">${c.d}/${c.r}</div></div>`).join('')}
     </div>
     <ul class="tree">
-      ${node('ge',nl0,cr2(geDone,geCur,30),geS,`<ul class="tree">
-        ${sub('ge1',sb[0],`<div class="course-list">${geChips(ge1)}</div>`,ge1b.b,ge1b.cls)}
-        ${sub('ge2',sb[1],`<div class="course-list">${geChips(ge2)}</div>`,ge2b.b,ge2b.cls)}
-        ${sub('ge3',sb[2],`<div class="course-list">${geChips(ge3)}</div>`,ge3b.b,ge3b.cls)}
+      ${node('ge',nl0,cr2(geDone,geCur,isNew?24:30),geS,`<ul class="tree">
+        ${sub('ge1',ge1lbl,`<div class="course-list">${geChips(ge1)}</div>`,ge1b.b,ge1b.cls)}
+        ${sub('ge2',ge2lbl,`<div class="course-list">${geChips(ge2)}</div>`,ge2b.b,ge2b.cls)}
+        ${sub('ge3',ge3lbl,`<div class="course-list">${geChips(ge3)}</div>`,ge3b.b,ge3b.cls)}
       </ul>`,'open')}
       ${node('core',nl1,cr2(crqDone+celDone,celCur,coreTotal),coreS,`<ul class="tree">
         ${sub('crq',sc[0],`<div class="course-list">${secChips('core_req')}</div>`,crqb.b,crqb.cls)}
